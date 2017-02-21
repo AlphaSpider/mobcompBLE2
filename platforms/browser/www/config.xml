@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.luengen.alexander" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:gap="http://phonegap.com/ns/1.0">
+    <name>BLE Environment</name>
+    <description>
+        The app scanns for special Environment Sensor devices with BLE.
+    </description>
+    <author email="alexander.luengen@student.kit.edu" href="Luengen">
+        LA
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <preference name="permissions" value="none" />
+</widget>

@@ -1,0 +1,68 @@
+:root{
+	--main-color: 	#98bff4;
+	--main-nav-color: 	#fd9471;
+	--main-nav-color-light:	#fdb49b;
+	--main-nav-color-dark: 	#ca765a;
+	--main-dark-color: 	#4c5f7a;
+	--main-light-color: #c1d8f8;
+}
+.content{
+	background-color:	var(--main-light-color);
+	height:	100%;	
+	width:	100%;
+	margin:	0px;
+}
+
+.actionBar{
+	background-color:	var(--main-color);
+	height: 30px;
+	width:	100%;
+	margin:	0px;
+}
+.actionBar.ul{
+	list-style-type:	none;
+	margin:	0;
+	padding:	0;
+	overflow:	hidden;
+	background-color:	inherit;
+}
+.actionBar.li{
+	float:	left;
+}
+
+.btn-fab-pos{
+	position: 	absolute;
+	bottom: 	15px;
+	right:		15px;
+}
+
+.btn-fab{
+	background-color: var(--main-nav-color);
+	width:	60px;
+	height:	60px;
+	border-radius:	100%;
+	border:	none;
+	outline:	none;
+	text-align:	center;
+	font-size:	12px;
+	box-shadow:	0px 3px 6px rgba(0,0,0,0.14),
+				0px 3px 6px rgba(0,0,0,0.28);
+	transition:	20ms;
+}
+.btn-fab:hover{
+	background-color:	var(--main-nav-color-dark);
+}
+.btn-fab:active{
+	background-color:	var(--main-nav-color-dark);
+	transform:	translateY(2px);
+	box-shadow: 0px 1px 6px rgba(0,0,0,0.14);
+}
+
+.deviceList{
+	list-style-type:	none;
+	margin:	0;
+	padding:	0;
+	overflow:	hidden;
+	background-color:	inherit;
+}
+
