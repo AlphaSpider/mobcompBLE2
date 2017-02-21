@@ -6,23 +6,31 @@
 	--main-dark-color: 	#4c5f7a;
 	--main-light-color: #c1d8f8;
 }
+
+body {
+	background-color:	var(--main-dark-color);
+	margin:	0px;
+}
+
 .content{
 	background-color:	var(--main-light-color);
 	height:	100%;	
-	width:	100%;
+	width:	auto;
 	margin:	0px;
+	padding:	5px;
 }
 
 .actionBar{
 	background-color:	var(--main-color);
 	height: 30px;
-	width:	100%;
+	width:	auto;
 	margin:	0px;
+	padding: 5px;
 }
 .actionBar.ul{
 	list-style-type:	none;
 	margin:	0;
-	padding:	0;
+	padding:	0; 
 	overflow:	hidden;
 	background-color:	inherit;
 }
