@@ -1,7 +1,9 @@
 
 document.addEventListener('deviceready', onDeviceReady, false);
 
-function onDeviceReady() { }
+$( document ).ready(function() {
+	console.log("ready!");
+});
 
 /*
 	Everything starts with this
@@ -50,10 +52,23 @@ function deviceFound(device) {
 
 //connect to the device
 function connectToDevice(listElement) {
-	
 	var rssi = listElement.getElementsByClassName("deviceRSSI")[0].value;
 }
 
+$(document).on("pageshow", function() {
+	rescaleContent();
+});
 
+§(window).on('resize orientationchange', rescaleContent());
+
+// calculate new height for the content div in index.html
+function rescaleContent() {
+	scroll(0, 0);
+	var winHeight = $(window).height();
+	var content = $("#content");
+	var contentMargins = content.outerHeight() - content.height();
+	var contentHeight = winHeight - contentMargins;
+	content.height(contentHeight);
+}
 
 

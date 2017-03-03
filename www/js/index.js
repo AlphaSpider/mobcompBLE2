@@ -1,7 +1,26 @@
 
-document.addEventListener('deviceready', onDeviceReady, false);
+/* Characteristics for the SparkFun BME 280 Sensor */
+var ENV_SERVICE	       	= "181a";
+var ENV_TEMP			= "2a6e";
+var ENV_HUM				= "2a6f";
+var ENV_PRESS			= "2a6d";
 
-function onDeviceReady() { }
+/*  Characteristics for the MiCS-6814 Sensor */
+var GAS_SERVICE   		= "4b822f90-3941-4a4b-a3cc-b2602ffe0d00";
+var GAS_CO_RAW			= "4b822fa1-3941-4a4b-a3cc-b2602ffe0d00";
+var GAS_CO_CALIB		= "4b822fa2-3941-4a4b-a3cc-b2602ffe0d00";
+var GAS_NO2_RAW			= "4b822f91-3941-4a4b-a3cc-b2602ffe0d00";
+var GAS_NO2_CALIB		= "4b822f92-3941-4a4b-a3cc-b2602ffe0d00";
+var GAS_NH3_RAW			= "4b822fb1-3941-4a4b-a3cc-b2602ffe0d00";
+var GAS_NH3_CALIB		= "4b822fb2-3941-4a4b-a3cc-b2602ffe0d00";
+
+var deviceCounter 		= 0;
+var stateConnected		= false;
+var connectedDevice;
+
+$( document ).ready(function() {
+	console.log("ready!");
+});
 
 /*
 	Everything starts with this
@@ -33,27 +52,53 @@ function stopScan() {
 }
 //found a Device, add it to the device list
 function deviceFound(device) {
-	var parDevice = JSON.parse(device);
-	var newEntry = document.getElemntById(
-								"deviceEntryTemp").cloneNode(true);
+	console.log("[deviceFound] " + device.name);
+	var newEntry 		= $("#listItem").clone();
 	
-	//set new id
-	newEntry.setAttribute("id","deviceEntry");
-	
-	//set the value for the device JSON
-	var json = newEntry.getElementsByClassName("deviceJSON")
-	json[0].innerHTML = parDevice;
-	
-	//append entry to the list of BLE devices
-	document.getElementById("deviceList").appendChild(newEntry);
+	if(device.name.toUpperCase == "TECO_ENV") {
+		// chain method-calls on jQuery object
+		newEntry.switchClass("listItemTemplate", "listItem")
+		newEntry.find("info")
+		.html("You can connect to this device");
+		
+		// add onClick to List item
+		// when clicked, check if connected or not
+		newEntry.click(function() {
+			/*TODO*/
+			if(!stateConnected) {
+				// connect to device
+				
+			} else {
+				// disconnect from former device
+			}
+		});
+		
+	} else {
+		newEntry.switchClass("listItemUnusable")
+		.find("#info")
+		.html("Unkown device. Unable to connect.");
+	}
+	newEntry.attr("id", deviceCounter++)
+	.appendTo("#deviceList")
+	.find("#name").html(device.name)
+	newEntry.find("RSSI").html("RSSI: " + device.rssi);
 }
 
-//connect to the device
-function connectToDevice(listElement) {
-	
-	var rssi = listElement.getElementsByClassName("deviceRSSI")[0].value;
+$(document).on("pageshow", function() {
+	rescaleContent();
+});
+
+ยง(window).on('resize orientationchange', rescaleContent());
+
+// calculate new height for the content div in index.html
+function rescaleContent() {
+	console.log("[RESCALING] rescaling now");
+	scroll(0, 0);
+	var winHeight 		= $(window).height();
+	var content 		= $("#content");
+	var contentMargins 	= content.outerHeight() - content.height();
+	var contentHeight 	= winHeight - contentMargins;
+	content.height(contentHeight);
 }
-
-
 
 
