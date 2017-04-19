@@ -3,44 +3,60 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-        <title>Mobile Computing & IoT - BLE App</title>
+        <title>Mobile Computing &amp; IoT - BLE App</title>
 		
 		<link rel="stylesheet" href="css/index.css">
+		<link rel="stylesheet" type="text/css" href="js/jquery-1.5.0.mobile.min.css">
+		<style>
+		/* For avoiding title truncation in wp8 */
+		.ui-header .ui-title {
+				overflow: visible !important;
+		}
+		/* For fixing the absolute position issue for the default cordova gen page*/
+		#cjp-accordion1 .app {
+				left: 5px !important;
+				margin: 5px !important;
+				position: relative !important;
+		}
+		</style>
     </head>
     <body>
-        
-		<div class="app">
-			<nav class="actionBar">
-				<ul id="actionBarList" style="display:none">
-					
-				</ul>
-				
-				Title
-			</nav>
+		<div data-role="header" data-position="fixed" class="actionBar">
+			<h1> BLE Scanner </h1>
+			<a href="#" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l custom-nav-color">Exit</a>
+			<a href="#" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-gear custom-nav-color">Options</a> 
+		</div>
 			
-			<div class="content">
-				<h1>Display a list of BLE devices</h1>
-				<!--entry for the ble list as example-->
-				<ul id="deviceList" class="deviceList">
-					<li id="deviceEntryTemp" class="listItem" style="display:none" onclick="connectToDevice(this)">
-						<h2 class="deviceName">temp Device Name</h2>
-						<p class="deviceRSSI">RSSI: XXXXXXXX</p>
-						<p class="deviceJSON">Placeholder</p>
+		<div data-role="content" id="content" class="content">
+			<h1>Display a list of BLE devices</h1>
+			<div id="listDiv">
+				<ul id="deviceList" data-role="listview" class="deviceList">
+					<li id="listItem" class="listItemTemplate" style="display:none">
+						<h1 id="name">Name</h1>
+						<p id="info">Some Information</p>
+						<p id="RSSI">444</p>
 					</li>
 				</ul>
-				
-				
 			</div>
-			
+				
 		</div>
 		
 		<!-- Button to start the BLE Scann routine -->
-		<button id="scan" style="position: absolute; bottom: 15px; right: 15px;" class="btn-fab btn-fab-pos" onclick="startBLEScan();">
+		<button id="scan" class="btn-fab btn-fab-pos" onclick="startBLEScan();">
 			<i>Start</i>
 		</button>
 		
 		
 		<script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script>
+		<script type="text/javascript" id="jqm-trans-disable">
+		/* For having a faster transition */
+		$(document).on("mobileinit", function() {
+				$.mobile.defaultPageTransition = "none";
+				$.mobile.defaultDialogTransition = "none";
+		});
+		</script>
+        <script type="text/javascript" src="js/jquery-1.5.0.mobile.min.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
 		
     </body>
