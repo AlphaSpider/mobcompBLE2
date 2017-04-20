@@ -63,18 +63,7 @@ function deviceFound(device) {
 		
 		// add onClick to List item
 		// when clicked, check if connected or not
-		newEntry.click(function() {
-			/*TODO*/
-<<<<<<< HEAD
-=======
-			if(!stateConnected) {
-				// connect to device
-				
-			} else {
-				// disconnect from former device
-			}
->>>>>>> 6188b6f021a91cc036ead3f2e5752ee609f73745
-		});
+		newEntry.click(tryConnect(device));
 		
 	} else {
 		newEntry.switchClass("listItemUnusable")
@@ -91,11 +80,39 @@ $(document).on("pageshow", function() {
 	rescaleContent();
 });
 
-<<<<<<< HEAD
-§(window).on('resize orientationchange', rescaleContent());
-=======
-ยง(window).on('resize orientationchange', rescaleContent());
->>>>>>> 6188b6f021a91cc036ead3f2e5752ee609f73745
+$(window).on('resize orientationchange', rescaleContent());
+
+//connect to device
+function tryConnect(device) {
+	if(!stateConnected) {
+		ble.connect(device.id, 
+		function() {
+			connectedDevice = device;
+			stateConnected = true;
+			connectionSuccess();
+		}, 
+		connectionFailure());
+	} else {
+		// currently connected to a device
+		// show allert
+	}
+}
+
+function connectionSuccess() {
+	//Switch to new Page
+	
+	//1. start retrieving calibration data
+	
+	//2. register for notification with Temp/Hum/Pres
+	//3. after 7s register for notification CO/NO2/NH3
+	
+	
+}
+
+function connectionFailure() {
+	
+}
+
 
 // calculate new height for the content div in index.html
 function rescaleContent() {

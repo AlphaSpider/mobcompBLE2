@@ -13,17 +13,21 @@ body ,html{
 	margin:	0px;
 }
 
+.customBackground{
+	background-color:	var(--main-light-color)!important;
+}
+
 .custom-nav-color{
 	background-color: var(--main-nav-color)!important;
 	color:	var(--main-nav-font-color)!important; 
 }
 
-.content{
-	background-color:	var(--main-light-color);
+.tabContent{
+	background-color:	var(--main-light-color)!important;
 	height:	100%!important;	
-	width:	auto;
-	margin:	0px;
-	padding:	5px;
+	width:	auto!important;
+	margin:	0px!important;
+	padding:	5px!important;
 }
 
 .actionBar{
@@ -55,10 +59,7 @@ body ,html{
 	outline:	none!important;
 	text-align:	center!important;
 	font-size:	12px!important;
-<<<<<<< HEAD
-=======
 	color:	var(--main-nav-font-color)!important;
->>>>>>> 6188b6f021a91cc036ead3f2e5752ee609f73745
 	box-shadow:	0px 3px 6px rgba(0,0,0,0.14),
 				0px 3px 6px rgba(0,0,0,0.28)!important;
 	transition:	20ms!important;

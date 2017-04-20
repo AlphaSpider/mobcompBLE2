@@ -28,23 +28,45 @@
 		</div>
 			
 		<div data-role="content" id="content" class="content">
-			<h1>Display a list of BLE devices</h1>
-			<div id="listDiv">
-				<ul id="deviceList" data-role="listview" class="deviceList">
-					<li id="listItem" class="listItemTemplate" style="display:none">
-						<h1 id="name">Name</h1>
-						<p id="info">Some Information</p>
-						<p id="RSSI">444</p>
-					</li>
-				</ul>
+			<div data-role="tabs" id="tabs">
+				<!-- NavBar for the mainpage -->
+				<div data-role="navbar">
+					<ul>
+						<li><a href="#sensor" data-ajax="false">Sensors</a></li>
+						<li><a href="#graph" data-ajax="false">Graphs</a></li>
+					</ul>
+				</div>
+				<!-- 	1. Tab for Sensor
+						2. Tab for the Graphs	-->
+				<div id="sensor" class="tabContent">
+					<h1>List of Sensor devices</h1>
+					<hr></hr>
+					<div id="listDiv">
+						<ul id="deviceList" data-role="listview" class="deviceList">
+							<li id="listItem" class="listItemTemplate" style="display:none">
+								<h1 id="name">Name</h1>
+								<p id="info">Some Information</p>
+								<p id="RSSI">444</p>
+							</li>
+						</ul>
+					</div>
+					
+					<!-- Button to start the BLE Scann routine -->
+					<button id="scan" class="btn-fab btn-fab-pos" onclick="startBLEScan();">
+						<i>Start</i>
+					</button>
+				</div>
+				<div id="graph" class="tabContent">
+					<!--TODO: add content for the graph stuff-->
+					
+				</div>
 			</div>
+			
+			
+			
+			
 				
 		</div>
-		
-		<!-- Button to start the BLE Scann routine -->
-		<button id="scan" class="btn-fab btn-fab-pos" onclick="startBLEScan();">
-			<i>Start</i>
-		</button>
 		
 		
 		<script type="text/javascript" src="cordova.js"></script>

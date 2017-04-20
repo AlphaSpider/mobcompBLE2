@@ -5,6 +5,7 @@
 	--main-nav-color-dark: 	#ca765a;
 	--main-dark-color: 	#4c5f7a;
 	--main-light-color: #c1d8f8;
+	--main-nav-font-color:	#ffffff;
 }
 
 body ,html{
@@ -12,17 +13,21 @@ body ,html{
 	margin:	0px;
 }
 
-.custom-nav-color{
-	background-color: var(--main-nav-color)!important;
-	font-color: 
+.customBackground{
+	background-color:	var(--main-light-color)!important;
 }
 
-.content{
-	background-color:	var(--main-light-color);
+.custom-nav-color{
+	background-color: var(--main-nav-color)!important;
+	color:	var(--main-nav-font-color)!important; 
+}
+
+.tabContent{
+	background-color:	var(--main-light-color)!important;
 	height:	100%!important;	
-	width:	auto;
-	margin:	0px;
-	padding:	5px;
+	width:	auto!important;
+	margin:	0px!important;
+	padding:	5px!important;
 }
 
 .actionBar{
@@ -54,6 +59,7 @@ body ,html{
 	outline:	none!important;
 	text-align:	center!important;
 	font-size:	12px!important;
+	color:	var(--main-nav-font-color)!important;
 	box-shadow:	0px 3px 6px rgba(0,0,0,0.14),
 				0px 3px 6px rgba(0,0,0,0.28)!important;
 	transition:	20ms!important;
