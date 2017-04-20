@@ -16,7 +16,7 @@ var GAS_NH3_CALIB		= "4b822fb2-3941-4a4b-a3cc-b2602ffe0d00";
 
 var deviceCounter 		= 0;
 var stateConnected		= false;
-
+var connectedDevice;
 
 $( document ).ready(function() {
 	console.log("ready!");
@@ -65,6 +65,15 @@ function deviceFound(device) {
 		// when clicked, check if connected or not
 		newEntry.click(function() {
 			/*TODO*/
+<<<<<<< HEAD
+=======
+			if(!stateConnected) {
+				// connect to device
+				
+			} else {
+				// disconnect from former device
+			}
+>>>>>>> 6188b6f021a91cc036ead3f2e5752ee609f73745
 		});
 		
 	} else {
@@ -82,7 +91,11 @@ $(document).on("pageshow", function() {
 	rescaleContent();
 });
 
+<<<<<<< HEAD
 §(window).on('resize orientationchange', rescaleContent());
+=======
+ยง(window).on('resize orientationchange', rescaleContent());
+>>>>>>> 6188b6f021a91cc036ead3f2e5752ee609f73745
 
 // calculate new height for the content div in index.html
 function rescaleContent() {

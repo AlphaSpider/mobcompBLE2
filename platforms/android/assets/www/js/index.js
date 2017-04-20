@@ -5,6 +5,7 @@ var ENV_TEMP			= "2a6e";
 var ENV_HUM				= "2a6f";
 var ENV_PRESS			= "2a6d";
 
+<<<<<<< HEAD
 /*  Characteristics for the MiCS-6814 Sensor */
 var GAS_SERVICE   		= "4b822f90-3941-4a4b-a3cc-b2602ffe0d00";
 var GAS_CO_RAW			= "4b822fa1-3941-4a4b-a3cc-b2602ffe0d00";
@@ -18,6 +19,8 @@ var deviceCounter 		= 0;
 var stateConnected		= false;
 
 
+=======
+>>>>>>> 6188b6f021a91cc036ead3f2e5752ee609f73745
 $( document ).ready(function() {
 	console.log("ready!");
 });
@@ -78,20 +81,40 @@ function deviceFound(device) {
 	newEntry.find("RSSI").html("RSSI: " + device.rssi);
 }
 
+<<<<<<< HEAD
 $(document).on("pageshow", function() {
 	rescaleContent();
 });
 
+=======
+//connect to the device
+function connectToDevice(listElement) {
+	var rssi = listElement.getElementsByClassName("deviceRSSI")[0].value;
+}
+
+$(document).on("pageshow", function() {
+	rescaleContent();
+});
+
+>>>>>>> 6188b6f021a91cc036ead3f2e5752ee609f73745
 §(window).on('resize orientationchange', rescaleContent());
 
 // calculate new height for the content div in index.html
 function rescaleContent() {
+<<<<<<< HEAD
 	console.log("[RESCALING] rescaling now");
 	scroll(0, 0);
 	var winHeight 		= $(window).height();
 	var content 		= $("#content");
 	var contentMargins 	= content.outerHeight() - content.height();
 	var contentHeight 	= winHeight - contentMargins;
+=======
+	scroll(0, 0);
+	var winHeight = $(window).height();
+	var content = $("#content");
+	var contentMargins = content.outerHeight() - content.height();
+	var contentHeight = winHeight - contentMargins;
+>>>>>>> 6188b6f021a91cc036ead3f2e5752ee609f73745
 	content.height(contentHeight);
 }
 

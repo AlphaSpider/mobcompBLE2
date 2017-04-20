@@ -5,6 +5,7 @@
 	--main-nav-color-dark: 	#ca765a;
 	--main-dark-color: 	#4c5f7a;
 	--main-light-color: #c1d8f8;
+	--main-nav-font-color:	#ffffff;
 }
 
 body ,html{
@@ -14,7 +15,7 @@ body ,html{
 
 .custom-nav-color{
 	background-color: var(--main-nav-color)!important;
-	font-color: 
+	color:	var(--main-nav-font-color)!important; 
 }
 
 .content{
@@ -54,6 +55,10 @@ body ,html{
 	outline:	none!important;
 	text-align:	center!important;
 	font-size:	12px!important;
+<<<<<<< HEAD
+=======
+	color:	var(--main-nav-font-color)!important;
+>>>>>>> 6188b6f021a91cc036ead3f2e5752ee609f73745
 	box-shadow:	0px 3px 6px rgba(0,0,0,0.14),
 				0px 3px 6px rgba(0,0,0,0.28)!important;
 	transition:	20ms!important;
