@@ -19,6 +19,7 @@ var stateConnected		= false;
 var missingCalData		= false;
 var connectedDevice;
 var sensorUI;
+var calibData = [];
 
 $( document ).ready(function() {
 	console.log("ready!");
@@ -120,26 +121,40 @@ function connectionSuccess() {
 	//1. start retrieving calibration data
 	
 	// read CO calibration
-	ble.read(connectedDevice.id, GAS_SERVICE, GAS_CO_CALIB, calib_co_succ, calib_co_fail);
+	ble.read(connectedDevice.id, GAS_SERVICE, GAS_CO_CALIB, calibSucc, calibFail);
 	// read NO2 calibration
-	ble.read(connectedDevice.id);
+	ble.read(connectedDevice.id, GAS_SERVICE, GAS_NO2_CALIB, calibSucc, calibFail);
 	// read NH3 calibration
-	ble.read();
-	
+	ble.read(connectedDevice.id, GAS_SERVICE, GAS_NH3_CALIB, calibSucc, calibFail);
+		
 	//2. register for notification with Temp/Hum/Pres
-	
-	
+	// register for Temp
+	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_TEMP, notifyTemp, notifyFailure);
+	// register for Hum 
+	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_HUM, notifyHum, notifyFailure);
+	// register for Pres
+	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_PRESS, notifyPres, notifyFailure)
 	//3. after 7s register for notification CO/NO2/NH3
-	
-	
+	setTimeout(function() {
+		// stop former notifications 
+		
+	}, 7000);
 }
 
-function connectionFailure() {
-	
+function connectionFailure(peripheral) {
+	console.log("Failed to connect: " + peripheral);
 }
 
-function calibSucc(buffer) {
-	
+function calibCOSucc(buffer) {
+	calibData[0] = new Int16Array(buffer);
+}
+
+function calibNO2Succ(buffer) {
+	calibData[1] = new Int16Array(buffer);
+}
+
+function calibNH3Succ(buffer) {
+	calibData[2] = new Int16Array(buffer);
 }
 
 function calibFail(reason) {
@@ -147,6 +162,21 @@ function calibFail(reason) {
 	missingCalData = true;
 }
 
+function notifyTemp(buffer) {
+	console.log("Notification Temp: " + buffer);
+}
+
+function notifyHum(buffer) {
+	console.log("Notification Hum: " + buffer)
+}
+
+function notifyPres(buffer) {
+	console.log("Notification Pres: " + buffer);
+}
+
+function notifyFailure(reason) {
+	console.log("Notification failed: " + reason);
+}
 
 // calculate new height for the content div in index.html
 function rescaleContent() {
