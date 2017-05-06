@@ -16,11 +16,20 @@ var GAS_NH3_CALIB		= "4b822fb2-3941-4a4b-a3cc-b2602ffe0d00";
 
 var deviceCounter 		= 0;
 var stateConnected		= false;
+var missingCalData		= false;
 var connectedDevice;
+var sensorUI;
 
 $( document ).ready(function() {
 	console.log("ready!");
 });
+
+
+$(document).on("pageshow", function() {
+	rescaleContent();
+});
+
+$(window).on('resize orientationchange', rescaleContent());
 
 /*
 	Everything starts with this
@@ -76,20 +85,15 @@ function deviceFound(device) {
 	newEntry.find("RSSI").html("RSSI: " + device.rssi);
 }
 
-$(document).on("pageshow", function() {
-	rescaleContent();
-});
-
-$(window).on('resize orientationchange', rescaleContent());
-
 //connect to device
 function tryConnect(device) {
 	if(!stateConnected) {
 		ble.connect(device.id, 
-		function() {
+		function(peripheral) {
 			connectedDevice = device;
 			stateConnected = true;
-			connectionSuccess();
+			console.log(JSON.stringify(peripheral));
+			connectionSuccess(peripheral);
 		}, 
 		connectionFailure());
 	} else {
@@ -100,10 +104,31 @@ function tryConnect(device) {
 
 function connectionSuccess() {
 	//Switch to new Page
+	console.log("Page-Switch: try to sensorPage"");
+	$.mobile.pageContainer.pagecontainer("change", "#sensorPage",
+	{
+		transition: 'slide';
+		changeHash: false,
+		reverse:	true,
+		showLoadMsg:	true
+	});
+	
+	// TODO: populate content with sensorData.html
+	sensorUI = find.()
+	
 	
 	//1. start retrieving calibration data
 	
+	// read CO calibration
+	ble.read(connectedDevice.id, GAS_SERVICE, GAS_CO_CALIB, calib_co_succ, calib_co_fail);
+	// read NO2 calibration
+	ble.read(connectedDevice.id);
+	// read NH3 calibration
+	ble.read();
+	
 	//2. register for notification with Temp/Hum/Pres
+	
+	
 	//3. after 7s register for notification CO/NO2/NH3
 	
 	
@@ -111,6 +136,15 @@ function connectionSuccess() {
 
 function connectionFailure() {
 	
+}
+
+function calibSucc(buffer) {
+	
+}
+
+function calibFail(reason) {
+	console.log(reason);
+	missingCalData = true;
 }
 
 

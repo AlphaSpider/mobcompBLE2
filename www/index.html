@@ -28,10 +28,11 @@
 				<a href="#" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-gear custom-nav-color">Options</a> 
 			</div>
 			<div id="loader"></div>
+			
 			<div data-role="content" id="content" class="content">
 				<div data-role="tabs" id="tabs">
 					<!-- NavBar for the mainpage -->
-					<div data-role="navbar">
+					<div class="ui-navbar" data-role="navbar" role="navigation">
 						<ul>
 							<li><a href="#sensor" data-ajax="false">Sensors</a></li>
 							<li><a href="#graph" data-ajax="false">Graphs</a></li>
@@ -64,6 +65,10 @@
 				</div>	
 			</div>
 		</div>	
+		
+		<!--
+		Shows the connected Sensor Information and retrieved data
+		-->
 		<div data-role="page" id="sensorPage">
 			<div data-role="header" data-position="fixed" class="actionBar">
 				<h1>Teco Env Device</h1>
@@ -73,7 +78,7 @@
 			</div>
 			<div data-role="footer">
 				<button id="btn-cancel">Cancel</button>
-				<button id="btn-upload"></button>
+				<button id="btn-upload">Upload</button>
 			</div>
 		</div>
 		
