@@ -6,7 +6,10 @@
         <title>Mobile Computing &amp; IoT - BLE App</title>
 		
 		<link rel="stylesheet" href="css/index.css">
-		<link rel="stylesheet" type="text/css" href="js/jquery-1.5.0.mobile.min.css">
+		<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css">
+		<link rel="stylesheet" type="text/css" href="css/nativedroid2.css">
+		<link rel="stylesheet" href="/vendor/waves/waves.min.css" />
+		<link rel="stylesheet" href="/vendor/wow/animate.css" />
 		<style>
 		/* For avoiding title truncation in wp8 */
 		.ui-header .ui-title {
@@ -22,16 +25,52 @@
     </head>
     <body>
 		<div data-role="page" id="mainPage">
-			<div data-role="header" data-position="fixed" class="actionBar">
-				<h1> BLE Scanner </h1>
-				<a href="#" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l custom-nav-color">Exit</a>
-				<a href="#" class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-gear custom-nav-color">Options</a> 
+			<div data-role="header" data-position="fixed" class="ui-content">
+				<h1 style="text-align: center;"> BLE Scanner </h1>
+				<a href="#" class="ui-btn-left ui-btn ui-corner-all ui-btn-icon-left ui-icon-carat-l ui-btn-icon-notext">Exit</a>
+				<a href="#" class="ui-btn-right ui-btn ui-corner-all ui-btn-icon-left ui-icon-gear ui-btn-icon-notext">Options</a> 
+				
+				<!-- NavBar for the mainpage -->
+				<ul data-role="nd2tabs" data-swipe="true" style="text-align: center;">
+					<li data-tab="Graphs">Graphs</li>
+					<li data-tab="Sensors">Sensors</li>
+				</ul>
 			</div>
-			<div id="loader"></div>
 			
-			<div data-role="content" id="content" class="content">
-				<div data-role="tabs" id="tabs">
-					<!-- NavBar for the mainpage -->
+			<div data-role="content" id="content" class="ui-content">
+				
+				<!-- Tab for the Graphs -->
+				<div data-role="nd2tab" data-tab="Graphs">
+					<h1>Graphs</h1>
+					<hr></hr>
+				</div>
+				
+				<!-- Tab for the Sensors -->
+				<div data-role="nd2tab" data-tab="Sensors">
+					<h1>List of Sensor devices</h1>
+					<hr></hr>
+					<div data-role="collapsible-set" data-inset="false" id="deviceList">
+						
+						<div data-role="collapsible" id="deviceListItem" data-iconpos="right">
+							<h1 id="name">Name of Device</h1>
+							<p id="info">INFO: Some information about this device</p>
+							<p id="RSSI">RSSI: 4455q412</p>
+							<a href="#" class="ui-btn ui-btn-raised clr-primary">Test</a>
+						</div>
+						<div data-role="collapsible" id="deviceListItem" data-iconpos="right">
+							<h1 id="name">Name of Device2</h1>
+							<p id="info">INFO: Some information about this device</p>
+							<p id="RSSI">RSSI: 4455q412</p>
+							
+						</div>
+					</div>
+				</div>
+			
+			
+			
+			
+				<div data-role="tabs">
+					
 					<div class="ui-navbar" data-role="navbar" role="navigation">
 						<ul>
 							<li><a href="#sensor" data-ajax="false">Sensors</a></li>
@@ -44,7 +83,7 @@
 						<h1>List of Sensor devices</h1>
 						<hr></hr>
 						<div id="listDiv">
-							<ul id="deviceList" data-role="listview" class="deviceList">
+							<ul id="deviceList" data-role="listview">
 								<li id="listItem" class="listItemTemplate" style="display:none">
 									<h1 id="name">Name</h1>
 									<p id="info">Some Information</p>
@@ -91,7 +130,10 @@
 				$.mobile.defaultDialogTransition = "none";
 		});
 		</script>
-        <script type="text/javascript" src="js/jquery-1.5.0.mobile.min.js"></script>
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="js/nativedroid2.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
 		
     </body>
