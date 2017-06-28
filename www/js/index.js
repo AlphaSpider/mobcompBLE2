@@ -105,17 +105,17 @@ function tryConnect(device) {
 
 function connectionSuccess() {
 	//Switch to new Page
-	console.log("Page-Switch: try to sensorPage"");
+	console.log("Page-Switch: try to sensorPage");
 	$.mobile.pageContainer.pagecontainer("change", "#sensorPage",
 	{
-		transition: 'slide';
+		transition: 'slide',
 		changeHash: false,
 		reverse:	true,
 		showLoadMsg:	true
 	});
 	
 	// TODO: populate content with sensorData.html
-	sensorUI = find.()
+	
 	
 	
 	//1. start retrieving calibration data
@@ -189,4 +189,15 @@ function rescaleContent() {
 	content.height(contentHeight);
 }
 
-
+$(document).on("pagecreate", function() {
+	var nextId = 1;
+	$("#addListBTN").click(function() {
+		var content = 	"<div data-role='collapsible' id='test" + nextId + "' data-iconpos='right'>" +
+						"	<h1 id='name'>Name of Device2" + nextId + "</h1>" +
+						"	<p id='info'>INFO: Some information about this device</p>" +
+						"	<p id='RSSI'>RSSI: 4455q412</p>" +
+						"</div>";
+		$("#deviceList").append(content).collapsibleset("refresh");
+		nextId++;
+	});
+});

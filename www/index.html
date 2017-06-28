@@ -25,10 +25,10 @@
     </head>
     <body>
 		<div data-role="page" id="mainPage">
-			<div data-role="header" data-position="fixed" class="ui-content">
+			<div data-role="header" data-position="fixed" class="ui-content wow fadeIn">
 				<h1 style="text-align: center;"> BLE Scanner </h1>
 				<a href="#" class="ui-btn-left ui-btn ui-corner-all ui-btn-icon-left ui-icon-carat-l ui-btn-icon-notext">Exit</a>
-				<a href="#" class="ui-btn-right ui-btn ui-corner-all ui-btn-icon-left ui-icon-gear ui-btn-icon-notext">Options</a> 
+				<a href="#" class="ui-btn-right ui-btn ui-corner-all ui-btn-icon-left ui-icon-gear ui-btn-icon-notext"></a> 
 				
 				<!-- NavBar for the mainpage -->
 				<ul data-role="nd2tabs" data-swipe="true" style="text-align: center;">
@@ -52,23 +52,30 @@
 					<div data-role="collapsible-set" data-inset="false" id="deviceList">
 						
 						<div data-role="collapsible" id="deviceListItem" data-iconpos="right">
-							<h1 id="name">Name of Device</h1>
+							<h1 id="name">Name of Device</h1>							
 							<p id="info">INFO: Some information about this device</p>
 							<p id="RSSI">RSSI: 4455q412</p>
-							<a href="#" class="ui-btn ui-btn-raised clr-primary">Test</a>
+							<button class="ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary clr-bg-green clr-btn-accent-black">T</button>
 						</div>
-						<div data-role="collapsible" id="deviceListItem" data-iconpos="right">
+						<div data-role="collapsible" data-iconpos="right">
 							<h1 id="name">Name of Device2</h1>
 							<p id="info">INFO: Some information about this device</p>
 							<p id="RSSI">RSSI: 4455q412</p>
 							
 						</div>
+						<div data-role="collapsible" data-iconpos="right">
+							<h1 id="name">Name of Device2</h1>
+							<p id="info">INFO: Some information about this device</p>
+							<p id="RSSI">RSSI: 4455q412</p>
+						</div>
 					</div>
 				</div>
 			
-			
-			
-			
+				<button id="addListBTN" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary btn-fab-pos">New</button> 
+				
+				
+				
+				
 				<div data-role="tabs">
 					
 					<div class="ui-navbar" data-role="navbar" role="navigation">
@@ -123,6 +130,11 @@
 		
 		<script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script>
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="js/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="js/nativedroid2.js"></script>
+		<script type="text/javascript" src="js/index.js"></script>
 		<script type="text/javascript" id="jqm-trans-disable">
 		/* For having a faster transition */
 		$(document).on("mobileinit", function() {
@@ -130,11 +142,6 @@
 				$.mobile.defaultDialogTransition = "none";
 		});
 		</script>
-		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
-        <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
-		<script type="text/javascript" src="js/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="js/nativedroid2.js"></script>
-		<script type="text/javascript" src="js/index.js"></script>
 		
     </body>
 </html>
