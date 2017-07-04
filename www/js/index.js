@@ -15,6 +15,7 @@ var GAS_NH3_RAW			= "4b822fb1-3941-4a4b-a3cc-b2602ffe0d00";
 var GAS_NH3_CALIB		= "4b822fb2-3941-4a4b-a3cc-b2602ffe0d00";
 
 var deviceCounter 		= 0;
+var deviceNextId		= 0;
 var stateConnected		= false;
 var missingCalData		= false;
 var connectedDevice;
@@ -35,9 +36,13 @@ $(window).on('resize orientationchange', rescaleContent());
 /*
 	Everything starts with this
 */
-function startBLEScan() {
-	ble.isEnabled(bleEnabled, bleDisabled);
-}
+$(document).on("pagecreate", function() {
+	$("#addListBtn").click(function() {
+		console.log("Starting BLE Scann");
+		ble.isEnabled(bleEnabled, bleDisabled);
+	});
+});
+
 
 //BLE is enabled on the device
 function bleEnabled() {
@@ -62,28 +67,44 @@ function stopScan() {
 }
 //found a Device, add it to the device list
 function deviceFound(device) {
-	console.log("[deviceFound] " + device.name);
-	var newEntry 		= $("#listItem").clone();
+	var JDev = JSON.parse(device);
+	console.log("[deviceFound] " + JDev.name);
+	console.log(JDev);
+	var newEntry = "<div data-role='collapsible' id='deviceListItem" + deviceNextId + "' data-iconpos='left'>" +
+						"<h1 id='name" + deviceNextId + "'>" + JDev.name + "</h1>" +						
+						"<p id='info" + deviceNextId + "'>INFO: Placeholder</p>" +
+						"<p id='RSSI" + deviceNextId + "'>RSSI: 000000000000</p>" +
+						"<div class='row center-xs'>" +
+							"<div class='col-xs-12'>" +
+								"<button id='conBtn" + deviceNextId + "' class='ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary clr-bg-green clr-btn-accent-black'>T</button>" +
+							"</div>" +
+						"</div>" +
+						"<p>" + device + "</p>"
+					"</div>";
+	if(deviceNextId == 0) {
+		// remove the palceholder text
+		$("listPlaceholder").remove();
+	}
 	
 	if(device.name.toUpperCase == "TECO_ENV") {
 		// chain method-calls on jQuery object
-		newEntry.switchClass("listItemTemplate", "listItem")
-		newEntry.find("info")
+		newEntry.find("info" + deviceNextId)
 		.html("You can connect to this device");
 		
 		// add onClick to List item
 		// when clicked, check if connected or not
-		newEntry.click(tryConnect(device));
-		
+		newEntry.getElementById("conBtn" + deviceNextId).click(function() {
+			currentDevice = device;
+			tryConnect(currentDevice);
+		});
 	} else {
 		newEntry.switchClass("listItemUnusable")
-		.find("#info")
+		.find("#info" + deviceNextId)
 		.html("Unkown device. Unable to connect.");
+		newEntry.find("#conBtn" + deviceNextId).className += 'ui-disabled';
 	}
-	newEntry.attr("id", deviceCounter++)
-	.appendTo("#deviceList")
-	.find("#name").html(device.name)
-	newEntry.find("RSSI").html("RSSI: " + device.rssi);
+	deviceNextId++;
+	$("#deviceList").append(newEntry).collapsibleset("refresh");
 }
 
 //connect to device
@@ -115,8 +136,6 @@ function connectionSuccess() {
 	});
 	
 	// TODO: populate content with sensorData.html
-	
-	
 	
 	//1. start retrieving calibration data
 	
@@ -190,14 +209,13 @@ function rescaleContent() {
 }
 
 $(document).on("pagecreate", function() {
-	var nextId = 1;
-	$("#addListBTN").click(function() {
-		var content = 	"<div data-role='collapsible' id='test" + nextId + "' data-iconpos='right'>" +
-						"	<h1 id='name'>Name of Device2" + nextId + "</h1>" +
-						"	<p id='info'>INFO: Some information about this device</p>" +
-						"	<p id='RSSI'>RSSI: 4455q412</p>" +
-						"</div>";
-		$("#deviceList").append(content).collapsibleset("refresh");
-		nextId++;
+	console.log("Adding some stuff");
+	$("#Sensors").on("swipeleft", function(event) {
+		// switch the scan button
+		console.log("swipeleft :)");
+	});
+	$("#Sensors").on("swiperight", function(event) {
+		// switch the scan button
+		console.log("swiperight (:");
 	});
 });

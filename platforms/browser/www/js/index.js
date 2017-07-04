@@ -15,19 +15,34 @@ var GAS_NH3_RAW			= "4b822fb1-3941-4a4b-a3cc-b2602ffe0d00";
 var GAS_NH3_CALIB		= "4b822fb2-3941-4a4b-a3cc-b2602ffe0d00";
 
 var deviceCounter 		= 0;
+var deviceNextId		= 0;
 var stateConnected		= false;
+var missingCalData		= false;
 var connectedDevice;
+var sensorUI;
+var calibData = [];
 
 $( document ).ready(function() {
 	console.log("ready!");
 });
 
+
+$(document).on("pageshow", function() {
+	rescaleContent();
+});
+
+$(window).on('resize orientationchange', rescaleContent());
+
 /*
 	Everything starts with this
 */
-function startBLEScan() {
-	ble.isEnabled(bleEnabled, bleDisabled);
-}
+$(document).on("pagecreate", function() {
+	$("#addListBtn").click(function() {
+		console.log("Starting BLE Scann");
+		ble.isEnabled(bleEnabled, bleDisabled);
+	});
+});
+
 
 //BLE is enabled on the device
 function bleEnabled() {
@@ -52,44 +67,135 @@ function stopScan() {
 }
 //found a Device, add it to the device list
 function deviceFound(device) {
-	console.log("[deviceFound] " + device.name);
-	var newEntry 		= $("#listItem").clone();
+	var JDev = JSON.parse(device);
+	console.log("[deviceFound] " + JDev.name);
+	console.log(JDev);
+	var newEntry = "<div data-role='collapsible' id='deviceListItem" + deviceNextId + "' data-iconpos='left'>" +
+						"<h1 id='name" + deviceNextId + "'>" + JDev.name + "</h1>" +						
+						"<p id='info" + deviceNextId + "'>INFO: Placeholder</p>" +
+						"<p id='RSSI" + deviceNextId + "'>RSSI: 000000000000</p>" +
+						"<div class='row center-xs'>" +
+							"<div class='col-xs-12'>" +
+								"<button id='conBtn" + deviceNextId + "' class='ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary clr-bg-green clr-btn-accent-black'>T</button>" +
+							"</div>" +
+						"</div>" +
+						"<p>" + device + "</p>"
+					"</div>";
+	if(deviceNextId == 0) {
+		// remove the palceholder text
+		$("listPlaceholder").remove();
+	}
 	
 	if(device.name.toUpperCase == "TECO_ENV") {
 		// chain method-calls on jQuery object
-		newEntry.switchClass("listItemTemplate", "listItem")
-		newEntry.find("info")
+		newEntry.find("info" + deviceNextId)
 		.html("You can connect to this device");
 		
 		// add onClick to List item
 		// when clicked, check if connected or not
-		newEntry.click(function() {
-			/*TODO*/
-			if(!stateConnected) {
-				// connect to device
-				
-			} else {
-				// disconnect from former device
-			}
+		newEntry.getElementById("conBtn" + deviceNextId).click(function() {
+			currentDevice = device;
+			tryConnect(currentDevice);
 		});
-		
 	} else {
 		newEntry.switchClass("listItemUnusable")
-		.find("#info")
+		.find("#info" + deviceNextId)
 		.html("Unkown device. Unable to connect.");
+		newEntry.find("#conBtn" + deviceNextId).className += 'ui-disabled';
 	}
-	newEntry.attr("id", deviceCounter++)
-	.appendTo("#deviceList")
-	.find("#name").html(device.name)
-	newEntry.find("RSSI").html("RSSI: " + device.rssi);
+	deviceNextId++;
+	$("#deviceList").append(newEntry).collapsibleset("refresh");
 }
 
-$(document).on("pageshow", function() {
-	rescaleContent();
-});
+//connect to device
+function tryConnect(device) {
+	if(!stateConnected) {
+		ble.connect(device.id, 
+		function(peripheral) {
+			connectedDevice = device;
+			stateConnected = true;
+			console.log(JSON.stringify(peripheral));
+			connectionSuccess(peripheral);
+		}, 
+		connectionFailure());
+	} else {
+		// currently connected to a device
+		// show allert
+	}
+}
 
-$(window).on('resize orientationchange', rescaleContent());
+function connectionSuccess() {
+	//Switch to new Page
+	console.log("Page-Switch: try to sensorPage");
+	$.mobile.pageContainer.pagecontainer("change", "#sensorPage",
+	{
+		transition: 'slide',
+		changeHash: false,
+		reverse:	true,
+		showLoadMsg:	true
+	});
+	
+	// TODO: populate content with sensorData.html
+	
+	//1. start retrieving calibration data
+	
+	// read CO calibration
+	ble.read(connectedDevice.id, GAS_SERVICE, GAS_CO_CALIB, calibSucc, calibFail);
+	// read NO2 calibration
+	ble.read(connectedDevice.id, GAS_SERVICE, GAS_NO2_CALIB, calibSucc, calibFail);
+	// read NH3 calibration
+	ble.read(connectedDevice.id, GAS_SERVICE, GAS_NH3_CALIB, calibSucc, calibFail);
+		
+	//2. register for notification with Temp/Hum/Pres
+	// register for Temp
+	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_TEMP, notifyTemp, notifyFailure);
+	// register for Hum 
+	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_HUM, notifyHum, notifyFailure);
+	// register for Pres
+	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_PRESS, notifyPres, notifyFailure)
+	//3. after 7s register for notification CO/NO2/NH3
+	setTimeout(function() {
+		// stop former notifications 
+		
+	}, 7000);
+}
 
+function connectionFailure(peripheral) {
+	console.log("Failed to connect: " + peripheral);
+}
+
+function calibCOSucc(buffer) {
+	calibData[0] = new Int16Array(buffer);
+}
+
+function calibNO2Succ(buffer) {
+	calibData[1] = new Int16Array(buffer);
+}
+
+function calibNH3Succ(buffer) {
+	calibData[2] = new Int16Array(buffer);
+}
+
+function calibFail(reason) {
+	console.log(reason);
+	missingCalData = true;
+}
+
+function notifyTemp(buffer) {
+	console.log("Notification Temp: " + buffer);
+}
+
+function notifyHum(buffer) {
+	console.log("Notification Hum: " + buffer)
+}
+
+function notifyPres(buffer) {
+	console.log("Notification Pres: " + buffer);
+}
+
+function notifyFailure(reason) {
+	console.log("Notification failed: " + reason);
+}
 
 // calculate new height for the content div in index.html
 function rescaleContent() {
@@ -102,4 +208,14 @@ function rescaleContent() {
 	content.height(contentHeight);
 }
 
-
+$(document).on("pagecreate", function() {
+	console.log("Adding some stuff");
+	$("#Sensors").on("swipeleft", function(event) {
+		// switch the scan button
+		console.log("swipeleft :)");
+	});
+	$("#Sensors").on("swiperight", function(event) {
+		// switch the scan button
+		console.log("swiperight (:");
+	});
+});

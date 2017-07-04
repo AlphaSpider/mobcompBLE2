@@ -8,8 +8,9 @@
 		<link rel="stylesheet" href="css/index.css">
 		<link rel="stylesheet" type="text/css" href="css/jquery.mobile-1.4.5.min.css">
 		<link rel="stylesheet" type="text/css" href="css/nativedroid2.css">
-		<link rel="stylesheet" href="/vendor/waves/waves.min.css" />
-		<link rel="stylesheet" href="/vendor/wow/animate.css" />
+		<link rel="stylesheet" href="css/waves.min.css" />
+		<link rel="stylesheet" href="css/animate.css" />
+		<link rel="stylesheet" href="vendor/waves/waves.min.css" />
 		<style>
 		/* For avoiding title truncation in wp8 */
 		.ui-header .ui-title {
@@ -26,115 +27,80 @@
     <body>
 		<div data-role="page" id="mainPage">
 			<div data-role="header" data-position="fixed" class="ui-content wow fadeIn">
-				<h1 style="text-align: center;"> BLE Scanner </h1>
-				<a href="#" class="ui-btn-left ui-btn ui-corner-all ui-btn-icon-left ui-icon-carat-l ui-btn-icon-notext">Exit</a>
-				<a href="#" class="ui-btn-right ui-btn ui-corner-all ui-btn-icon-left ui-icon-gear ui-btn-icon-notext"></a> 
+				<h1> BLE Scanner </h1>
 				
 				<!-- NavBar for the mainpage -->
 				<ul data-role="nd2tabs" data-swipe="true" style="text-align: center;">
-					<li data-tab="Graphs">Graphs</li>
 					<li data-tab="Sensors">Sensors</li>
+					<li data-tab="Graphs">Graphs</li>
 				</ul>
 			</div>
 			
 			<div data-role="content" id="content" class="ui-content">
 				
-				<!-- Tab for the Graphs -->
-				<div data-role="nd2tab" data-tab="Graphs">
-					<h1>Graphs</h1>
-					<hr></hr>
-				</div>
-				
 				<!-- Tab for the Sensors -->
-				<div data-role="nd2tab" data-tab="Sensors">
-					<h1>List of Sensor devices</h1>
+				<div data-role="nd2tab" data-tab="Sensors" id="Sensors">
+					<h4>List of Sensor devices</h4>
 					<hr></hr>
+					<p id="listPlaceholder" class="clr-grey">-- Run Scanner --</p>
+					
 					<div data-role="collapsible-set" data-inset="false" id="deviceList">
-						
-						<div data-role="collapsible" id="deviceListItem" data-iconpos="right">
+												
+						<div data-role="collapsible" id="deviceListItem" data-iconpos="left">
 							<h1 id="name">Name of Device</h1>							
 							<p id="info">INFO: Some information about this device</p>
 							<p id="RSSI">RSSI: 4455q412</p>
-							<button class="ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary clr-bg-green clr-btn-accent-black">T</button>
+							<div class="row center-xs">
+								<div class="col-xs-12 clr-">
+									<p class="clr-teal">Connect</p>
+								</div>
+						    </div>
+							<div class="row center-xs">
+								<div class="col-xs-12">
+									<button class="ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary clr-bg-green clr-btn-accent-black">T</button>
+								</div>
+						    </div>
 						</div>
-						<div data-role="collapsible" data-iconpos="right">
-							<h1 id="name">Name of Device2</h1>
-							<p id="info">INFO: Some information about this device</p>
-							<p id="RSSI">RSSI: 4455q412</p>
-							
-						</div>
-						<div data-role="collapsible" data-iconpos="right">
-							<h1 id="name">Name of Device2</h1>
-							<p id="info">INFO: Some information about this device</p>
-							<p id="RSSI">RSSI: 4455q412</p>
-						</div>
+						<hr />
 					</div>
 				</div>
-			
-				<button id="addListBTN" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary btn-fab-pos">New</button> 
+				
+				<!-- Tab for the Graphs -->
+				<div data-role="nd2tab" data-tab="Graphs">
+					<h4>Graphs</h4>
+					<hr></hr>
+				</div>
 				
 				
-				
-				
-				<div data-role="tabs">
-					
-					<div class="ui-navbar" data-role="navbar" role="navigation">
-						<ul>
-							<li><a href="#sensor" data-ajax="false">Sensors</a></li>
-							<li><a href="#graph" data-ajax="false">Graphs</a></li>
-						</ul>
-					</div>
-					<!-- 	1. Tab for Sensor
-							2. Tab for the Graphs	-->
-					<div id="sensor" class="tabContent">
-						<h1>List of Sensor devices</h1>
-						<hr></hr>
-						<div id="listDiv">
-							<ul id="deviceList" data-role="listview">
-								<li id="listItem" class="listItemTemplate" style="display:none">
-									<h1 id="name">Name</h1>
-									<p id="info">Some Information</p>
-									<p id="RSSI">444</p>
-								</li>
-							</ul>
-						</div>
-						
-						<!-- Button to start the BLE Scann routine -->
-						<button id="scan" class="btn-fab btn-fab-pos" onclick="startBLEScan();">
-							<i>Start</i>
-						</button>
-					</div>
-					<div id="graph" class="tabContent">
-						<!--TODO: add content for the graph stuff-->
-						
-					</div>
-				</div>	
 			</div>
+			<a id="addListBtn" onclick="startBLEScan" href="#" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button"><i class="zmdi zmdi-bluetooth-search zmd-2x"></i></a>
+			<!-- <div data-role="footer" data-position="fixed">
+				<div class="row center-xs">
+					<div class="col-xs-12">
+						<!-- <button id="addListBtn" class="ui-btn ui-btn-inline clr-btn-deep-purple waves-button waves-effect">Scan</button>
+						<a id="addListBtn" href="#" class="ui-btn ui-btn-inline clr-btn-deep-purple waves-button waves-effect waves-button waves-effect">Scan</a>
+					</div>
+				</div>
+			</div> -->
+			
 		</div>	
 		
-		<!--
-		Shows the connected Sensor Information and retrieved data
-		-->
-		<div data-role="page" id="sensorPage">
-			<div data-role="header" data-position="fixed" class="actionBar">
-				<h1>Teco Env Device</h1>
-			</div>
-			<div data-role="content">
-				<!-- populated with sensorData.html -->
-			</div>
-			<div data-role="footer">
-				<button id="btn-cancel">Cancel</button>
-				<button id="btn-upload">Upload</button>
-			</div>
+		<div data-role="page" id="devicePage">
+		
+		
+		
 		</div>
 		
+		
 		<script type="text/javascript" src="cordova.js"></script>
-        <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script>
-		<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+        <!-- <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script> -->
+		<script type="text/javascript" src="js/jquery-1.11.3.min.js" id="cordova-jquery"></script>
         <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="js/nativedroid2.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript" src="js/waves.min.js"></script>
+		
 		<script type="text/javascript" id="jqm-trans-disable">
 		/* For having a faster transition */
 		$(document).on("mobileinit", function() {
