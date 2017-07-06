@@ -1,12 +1,14 @@
 
 /* Characteristics for the SparkFun BME 280 Sensor */
 var ENV_SERVICE	       	= "181a";
+
 var ENV_TEMP			= "2a6e";
 var ENV_HUM				= "2a6f";
 var ENV_PRESS			= "2a6d";
 
 /*  Characteristics for the MiCS-6814 Sensor */
 var GAS_SERVICE   		= "4b822f90-3941-4a4b-a3cc-b2602ffe0d00";
+
 var GAS_CO_RAW			= "4b822fa1-3941-4a4b-a3cc-b2602ffe0d00";
 var GAS_CO_CALIB		= "4b822fa2-3941-4a4b-a3cc-b2602ffe0d00";
 var GAS_NO2_RAW			= "4b822f91-3941-4a4b-a3cc-b2602ffe0d00";
@@ -67,11 +69,10 @@ function stopScan() {
 }
 //found a Device, add it to the device list
 function deviceFound(device) {
-	var JDev = JSON.parse(device);
-	console.log("[deviceFound] " + JDev.name);
-	console.log(JDev);
+	console.log("[deviceFound] " + device.name);
+	console.log(device);
 	var newEntry = "<div data-role='collapsible' id='deviceListItem" + deviceNextId + "' data-iconpos='left'>" +
-						"<h1 id='name" + deviceNextId + "'>" + JDev.name + "</h1>" +						
+						"<h1 id='name" + deviceNextId + "'>" + device.name + "</h1>" +						
 						"<p id='info" + deviceNextId + "'>INFO: Placeholder</p>" +
 						"<p id='RSSI" + deviceNextId + "'>RSSI: 000000000000</p>" +
 						"<div class='row center-xs'>" +
@@ -86,7 +87,7 @@ function deviceFound(device) {
 		$("listPlaceholder").remove();
 	}
 	
-	if(device.name.toUpperCase == "TECO_ENV") {
+	if(device.name.toUpperCase() == "TECO_ENV") {
 		// chain method-calls on jQuery object
 		newEntry.find("info" + deviceNextId)
 		.html("You can connect to this device");
@@ -98,13 +99,18 @@ function deviceFound(device) {
 			tryConnect(currentDevice);
 		});
 	} else {
-		newEntry.switchClass("listItemUnusable")
-		.find("#info" + deviceNextId)
+		newEntry.find("#info" + deviceNextId)
 		.html("Unkown device. Unable to connect.");
 		newEntry.find("#conBtn" + deviceNextId).className += 'ui-disabled';
 	}
 	deviceNextId++;
 	$("#deviceList").append(newEntry).collapsibleset("refresh");
+}
+
+function failedToDiscover(reason) {
+	console.log("[Scanning]: Failed to scann for device. No Reason why. Stop Scanning.");
+	alert("Failed to scann for device. No Reason why. Stop Scanning.");
+	stopScan();
 }
 
 //connect to device
