@@ -132,7 +132,9 @@ function tryConnect(device) {
 		connectionFailure());
 	} else {
 		// currently connected to a device
-		// show allert
+		// 1. show Toast
+		// 2. disconnect and connect to new device
+		
 	}
 }
 
