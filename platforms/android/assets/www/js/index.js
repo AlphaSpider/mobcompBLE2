@@ -1,12 +1,14 @@
 
 /* Characteristics for the SparkFun BME 280 Sensor */
 var ENV_SERVICE	       	= "181a";
+
 var ENV_TEMP			= "2a6e";
 var ENV_HUM				= "2a6f";
 var ENV_PRESS			= "2a6d";
 
 /*  Characteristics for the MiCS-6814 Sensor */
 var GAS_SERVICE   		= "4b822f90-3941-4a4b-a3cc-b2602ffe0d00";
+
 var GAS_CO_RAW			= "4b822fa1-3941-4a4b-a3cc-b2602ffe0d00";
 var GAS_CO_CALIB		= "4b822fa2-3941-4a4b-a3cc-b2602ffe0d00";
 var GAS_NO2_RAW			= "4b822f91-3941-4a4b-a3cc-b2602ffe0d00";
@@ -67,44 +69,54 @@ function stopScan() {
 }
 //found a Device, add it to the device list
 function deviceFound(device) {
-	var JDev = JSON.parse(device);
-	console.log("[deviceFound] " + JDev.name);
-	console.log(JDev);
-	var newEntry = "<div data-role='collapsible' id='deviceListItem" + deviceNextId + "' data-iconpos='left'>" +
-						"<h1 id='name" + deviceNextId + "'>" + JDev.name + "</h1>" +						
-						"<p id='info" + deviceNextId + "'>INFO: Placeholder</p>" +
-						"<p id='RSSI" + deviceNextId + "'>RSSI: 000000000000</p>" +
-						"<div class='row center-xs'>" +
-							"<div class='col-xs-12'>" +
-								"<button id='conBtn" + deviceNextId + "' class='ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary clr-bg-green clr-btn-accent-black'>T</button>" +
-							"</div>" +
-						"</div>" +
-						"<p>" + device + "</p>"
-					"</div>";
+	console.log("[deviceFound] " + device.name);
+	console.log(device);
+	var newEntry = 
+		"<div data-role='collapsible' id='deviceListItem" + deviceNextId + "' data-iconpos='left'>" +
+			"<h1 id='name" + deviceNextId + "'>" + device.name + "</h1>" +						
+			"<p id='info" + deviceNextId + "'>INFO: Placeholder</p>" +
+			"<p id='RSSI" + deviceNextId + "'>RSSI: 000000000000</p>" +
+			"<div class='row center-xs'>" +
+				"<div class='col-xs-12'>" +
+					"<button id='conBtn" + deviceNextId + "' class='ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary clr-bg-green clr-btn-accent-black'>T</button>" +
+				"</div>" +
+			"</div>" +
+		"</div>";
+	$("#deviceList").append(newEntry);
 	if(deviceNextId == 0) {
 		// remove the palceholder text
 		$("listPlaceholder").remove();
 	}
 	
-	if(device.name.toUpperCase == "TECO_ENV") {
+	if("undefined" === typeof device.name) {
+		$("#deviceListItem" + deviceNextId).html(
+			"<h1>No Name</h1>" +
+			"<p>Cannot connect to this device.</p>"
+		);
+			
+	} else if(device.name.toUpperCase() == "TECO_ENV") {
 		// chain method-calls on jQuery object
-		newEntry.find("info" + deviceNextId)
-		.html("You can connect to this device");
-		
+		$("#info" + deviceNextId).html("You can connect to this device");
 		// add onClick to List item
 		// when clicked, check if connected or not
-		newEntry.getElementById("conBtn" + deviceNextId).click(function() {
+		$("#conBtn" + deviceNextId).click(function() {
 			currentDevice = device;
 			tryConnect(currentDevice);
 		});
+		
 	} else {
-		newEntry.switchClass("listItemUnusable")
-		.find("#info" + deviceNextId)
-		.html("Unkown device. Unable to connect.");
-		newEntry.find("#conBtn" + deviceNextId).className += 'ui-disabled';
+		$("#info" + deviceNextId).html("Unkown device. Unable to connect.")
+		$("#conBtn" + deviceNextId).addClass("ui-disabled");
 	}
+	$("#RSSI" + deviceNextId).html(device.rssi);
 	deviceNextId++;
-	$("#deviceList").append(newEntry).collapsibleset("refresh");
+	$("#deviceList").collapsibleset("refresh");
+}
+
+function failedToDiscover(reason) {
+	console.log("[Scanning]: Failed to scann for device. No Reason why. Stop Scanning.");
+	alert("Failed to scann for device. No Reason why. Stop Scanning.");
+	stopScan();
 }
 
 //connect to device
