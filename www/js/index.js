@@ -31,12 +31,11 @@ $(document).on("pageshow", function() {
 });
 
 $(window).on('resize orientationchange', rescaleContent());
-
 /*
 	Everything starts with this
 */
 $(document).on("pagecreate", function() {
-	$("#addListBtn").click(function() {
+	$("#startScanBtn").click(function() {
 		console.log("Starting BLE Scann");
 		ble.isEnabled(bleEnabled, bleDisabled);
 	});
@@ -45,8 +44,17 @@ $(document).on("pagecreate", function() {
 
 //BLE is enabled on the device
 function bleEnabled() {
+	$("#deviceList").empty();
 	//start the scan
 	ble.startScan([], deviceFound, failedToDiscover);
+	// show a loader while scanning for devices
+	$.mobile.loading("show", {
+		text: "Scanning for devices",
+		textVisible: true,
+		theme: "a",
+		textonly: false,
+		html: ""
+	});
 	setTimeout(stopScan, 5000);
 }
 
@@ -57,20 +65,25 @@ function bleDisabled() {
 }
 
 function enableFail(err) {
-	alert('Cannot enable Bluetooth');
+	alert('Cannot enable Bluetooth: ' + err);
+}
+
+function failedToDiscover() {
+	alert("Failed to discover a device.")
 }
 
 function stopScan() {
 	alert('Finished Scanning');
+	// hide loader
+	$.mobile.loading("hide");
 	ble.stopScan;
 }
 //found a Device, add it to the device list
 function deviceFound(device) {
-	var JDev = JSON.parse(device);
-	console.log("[deviceFound] " + JDev.name);
-	console.log(JDev);
+	console.log("[deviceFound] " + device.name);
+	console.log(device);
 	var newEntry = "<div data-role='collapsible' id='deviceListItem" + deviceNextId + "' data-iconpos='left'>" +
-						"<h1 id='name" + deviceNextId + "'>" + JDev.name + "</h1>" +						
+						"<h1 id='name" + deviceNextId + "'>" + device.name + "</h1>" +						
 						"<p id='info" + deviceNextId + "'>INFO: Placeholder</p>" +
 						"<p id='RSSI" + deviceNextId + "'>RSSI: 000000000000</p>" +
 						"<div class='row center-xs'>" +
@@ -93,7 +106,7 @@ function deviceFound(device) {
 		// add onClick to List item
 		// when clicked, check if connected or not
 		newEntry.getElementById("conBtn" + deviceNextId).click(function() {
-			currentDevice = device;
+			var currentDevice = device;
 			tryConnect(currentDevice);
 		});
 	} else {
@@ -127,7 +140,7 @@ function tryConnect(device) {
 function connectionSuccess() {
 	//Switch to new Page
 	console.log("Page-Switch: try to sensorPage");
-	$.mobile.pageContainer.pagecontainer("change", "#sensorPage",
+	$.mobile.pageContainer.pagecontainer("change", "#devicePage",
 	{
 		transition: 'slide',
 		changeHash: false,
@@ -140,11 +153,11 @@ function connectionSuccess() {
 	//1. start retrieving calibration data
 	
 	// read CO calibration
-	ble.read(connectedDevice.id, GAS_SERVICE, GAS_CO_CALIB, calibSucc, calibFail);
+	ble.read(connectedDevice.id, GAS_SERVICE, GAS_CO_CALIB, calibCOSucc, calibFail);
 	// read NO2 calibration
-	ble.read(connectedDevice.id, GAS_SERVICE, GAS_NO2_CALIB, calibSucc, calibFail);
+	ble.read(connectedDevice.id, GAS_SERVICE, GAS_NO2_CALIB, calibNO2Succ, calibFail);
 	// read NH3 calibration
-	ble.read(connectedDevice.id, GAS_SERVICE, GAS_NH3_CALIB, calibSucc, calibFail);
+	ble.read(connectedDevice.id, GAS_SERVICE, GAS_NH3_CALIB, calibNH3Succ, calibFail);
 		
 	//2. register for notification with Temp/Hum/Pres
 	// register for Temp
