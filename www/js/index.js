@@ -121,6 +121,7 @@ function tryConnect(device) {
 	} else {
 		// currently connected to a device
 		// show allert
+		alert("Currently connected to device: " + connectedDevice.name);
 	}
 }
 
