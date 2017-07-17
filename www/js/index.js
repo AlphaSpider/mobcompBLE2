@@ -1,12 +1,14 @@
 
 /* Characteristics for the SparkFun BME 280 Sensor */
 var ENV_SERVICE	       	= "181a";
+
 var ENV_TEMP			= "2a6e";
 var ENV_HUM				= "2a6f";
 var ENV_PRESS			= "2a6d";
 
 /*  Characteristics for the MiCS-6814 Sensor */
 var GAS_SERVICE   		= "4b822f90-3941-4a4b-a3cc-b2602ffe0d00";
+
 var GAS_CO_RAW			= "4b822fa1-3941-4a4b-a3cc-b2602ffe0d00";
 var GAS_CO_CALIB		= "4b822fa2-3941-4a4b-a3cc-b2602ffe0d00";
 var GAS_NO2_RAW			= "4b822f91-3941-4a4b-a3cc-b2602ffe0d00";
@@ -148,8 +150,6 @@ function connectionSuccess() {
 		showLoadMsg:	true
 	});
 	
-	// TODO: populate content with sensorData.html
-	
 	//1. start retrieving calibration data
 	
 	// read CO calibration
@@ -165,12 +165,21 @@ function connectionSuccess() {
 	// register for Hum 
 	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_HUM, notifyHum, notifyFailure);
 	// register for Pres
-	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_PRESS, notifyPres, notifyFailure)
+	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_PRESS, notifyPres, notifyFailure);
+	
+	// register for CO
+	ble.startNotification(connectedDevice.id, GAS_SERVICE, GAS_CO_RAW, notifyCO, notifyFailure);
+	// register for NO2
+	ble.startNotification(connectedDevice.id, GAS_SERVICE, GAS_NO2_RAW, notifyNO, notifyFailure);
+	// register for NH3
+	ble.startNotification(connectedDevice.id, GAS_SERVICE, GAS_NH3_RAW, notifyNH, notifyFailure)
+/*	
 	//3. after 7s register for notification CO/NO2/NH3
 	setTimeout(function() {
 		// stop former notifications 
 		
 	}, 7000);
+*/
 }
 
 function connectionFailure(peripheral) {
@@ -196,14 +205,32 @@ function calibFail(reason) {
 
 function notifyTemp(buffer) {
 	console.log("Notification Temp: " + buffer);
+	$("#value_temp").html(bytesToString(buffer));
 }
 
 function notifyHum(buffer) {
 	console.log("Notification Hum: " + buffer)
+	$("#value_hum").html(bytesToString(buffer));
 }
 
 function notifyPres(buffer) {
 	console.log("Notification Pres: " + buffer);
+	$("#value_pres").html(bytesToString(buffer));
+}
+
+function notifyCO(buffer) {
+	console.log("Notifcation CO: " + buffer);
+	$("#value_co").html(bytesToString(buffer));
+}
+
+function notifyNO(buffer) {
+	console.log("Notification NO: " + buffer);
+	$("#value_no").html(bytesToString(buffer));
+}
+
+function notifyNH(buffer) {
+	console.log("Notification NH: " + buffer);
+	$("#value_nh").html(bytesToString(buffer));
 }
 
 function notifyFailure(reason) {
@@ -232,3 +259,7 @@ $(document).on("pagecreate", function() {
 		console.log("swiperight (:");
 	});
 });
+
+function bytesToString(buffer) {
+	return String.fromCharCode.apply(null, new Uint8Array(buffer));
+}

@@ -67,8 +67,58 @@
 				<h2 id="deviceHeader">Device Name</h2>
 			</div>
 			<div data-role="content" class="ui-content">
-				
+			<table class="ui-responsive table-stroke" data-mode="columntoggle">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Value</th>
+						<th>Unit</th>
+						<th>Collects</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Temperature</td>
+						<td id="value_temp">00.0</td>
+						<td>&degC</td>
+						<td id="collects_temp">0</td>
+					</tr>
+					<tr>
+						<td>Humidity</td>
+						<td id="value_hum">00.0</td>
+						<td>%</td>
+						<td id="collects_hum">0</td>
+					</tr>
+					<tr>
+						<td>Air Pressure</td>
+						<td id="value_pres">00</td>
+						<td>Pa</td>
+						<td id="collects_pres">0</td>
+					</tr>
+					<tr>
+						<td>CO</td>
+						<td id="value_co">00.0</td>
+						<td>SI</td>
+						<td id="collects_co">0</td>
+					</tr>
+					<tr>
+						<td>NO2</td>
+						<td id="value_no">00.0</td>
+						<td>SI</td>
+						<td id="collects_no">0</td>
+					</tr>
+					<tr>
+						<td>NH3</td>
+						<td id="value_nh">00.0</td>
+						<td>SI</td>
+						<td id="collects_nh">0</td>
+					</tr>
+				</tbody>
+			</table>
+
+
 			</div>
+			
 			<a id="disconnectBtn" onclick="disconnectBtn" href="#" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button"></a>
 
 		</div>
