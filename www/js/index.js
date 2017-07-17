@@ -21,7 +21,8 @@ var deviceNextId		= 0;
 var stateConnected		= false;
 var missingCalData		= false;
 var connectedDevice;
-var calibData = [];
+var calibData 			= [];
+var isScanning 			= false;
 
 $( document ).ready(function() {
 	console.log("ready!");
@@ -37,6 +38,7 @@ $(window).on('resize orientationchange', rescaleContent());
 	Everything starts with this
 */
 $(document).on("pagecreate", function() {
+	
 	$("#startScanBtn").click(function() {
 		console.log("Starting BLE Scann");
 		ble.isEnabled(bleEnabled, bleDisabled);
@@ -46,18 +48,22 @@ $(document).on("pagecreate", function() {
 
 //BLE is enabled on the device
 function bleEnabled() {
-	$("#deviceList").empty();
-	//start the scan
-	ble.startScan([], deviceFound, failedToDiscover);
-	// show a loader while scanning for devices
-	$.mobile.loading("show", {
-		text: "Scanning for devices",
-		textVisible: true,
-		theme: "a",
-		textonly: false,
-		html: ""
-	});
-	setTimeout(stopScan, 5000);
+
+	if(!isScanning) {
+		isScanning = true;
+		$("#deviceList").empty();
+		//start the scan
+		ble.startScan([], deviceFound, failedToDiscover);
+		// show a loader while scanning for devices
+		$.mobile.loading("show", {
+			text: "Scanning for devices",
+			textVisible: true,
+			theme: "a",
+			textonly: false,
+			html: ""
+		});
+		setTimeout(stopScan, 5000);
+	}
 }
 
 //BLE is disabled on the device
@@ -79,6 +85,7 @@ function stopScan() {
 	// hide loader
 	$.mobile.loading("hide");
 	ble.stopScan;
+	isScanning = false;
 }
 //found a Device, add it to the device list
 function deviceFound(device) {
@@ -247,18 +254,6 @@ function rescaleContent() {
 	var contentHeight 	= winHeight - contentMargins;
 	content.height(contentHeight);
 }
-
-$(document).on("pagecreate", function() {
-	console.log("Adding some stuff");
-	$("#Sensors").on("swipeleft", function(event) {
-		// switch the scan button
-		console.log("swipeleft :)");
-	});
-	$("#Sensors").on("swiperight", function(event) {
-		// switch the scan button
-		console.log("swiperight (:");
-	});
-});
 
 function bytesToString(buffer) {
 	return String.fromCharCode.apply(null, new Uint8Array(buffer));
