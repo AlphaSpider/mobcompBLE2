@@ -10,7 +10,22 @@
 
 body ,html{
 	background-color:	var(--main-dark-color)!important;
-	margin:	0px;
+	margin:				0px;
+}
+
+.symbol-pos{
+	text-align: 	center!important;
+	margin-top:		8px!important;
+	margin-bottom:	8px!important;
+}
+
+.btnFooterMargin{
+	margin-top: 	10px!important;
+	margin-bottom: 	15px!important;
+}
+
+.btnCenter{
+	margin-top: 20px!important;
 }
 
 .customBackground{

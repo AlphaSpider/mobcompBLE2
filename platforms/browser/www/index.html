@@ -25,82 +25,244 @@
 		</style>
     </head>
     <body>
-		<div data-role="page" id="mainPage">
+	<!-- 
+		#########################################
+		Start Page
+		to scann and select a close-by BLE-device
+		#########################################			
+	-->
+		<div data-role="page" id="startPage">
+
 			<div data-role="header" data-position="fixed" class="ui-content wow fadeIn">
-				<h1> BLE Scanner </h1>
-				
-				<!-- NavBar for the mainpage -->
-				<ul data-role="nd2tabs" data-swipe="true" style="text-align: center;">
-					<li data-tab="Sensors">Sensors</li>
-					<li data-tab="Graphs">Graphs</li>
-				</ul>
+				<h2> Morse Learner </h2>	
 			</div>
 			
 			<div data-role="content" id="content" class="ui-content">
 				
-				<!-- Tab for the Sensors -->
-				<div data-role="nd2tab" data-tab="Sensors" id="Sensors">
-					<h4>List of Sensor devices</h4>
-					<hr></hr>
-					<p id="listPlaceholder" class="clr-grey">-- Run Scanner --</p>
-					
-					<div data-role="collapsible-set" data-inset="false" id="deviceList">
-												
-						<div data-role="collapsible" id="deviceListItem" data-iconpos="left">
-							<h1 id="name">Name of Device</h1>							
-							<p id="info">INFO: Some information about this device</p>
-							<p id="RSSI">RSSI: 4455q412</p>
-							<div class="row center-xs">
-								<div class="col-xs-12 clr-">
-									<p class="clr-teal">Connect</p>
-								</div>
-						    </div>
-							<div class="row center-xs">
-								<div class="col-xs-12">
-									<button class="ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary clr-bg-green clr-btn-accent-black">T</button>
-								</div>
-						    </div>
-						</div>
-						<hr />
-					</div>
+<!--			<h4>List of Sensor devices</h4>
+				<hr></hr>
+				<p id="listPlaceholder" class="clr-grey">-- Run Scanner --</p>
+				
+				<div data-role="collapsible-set" data-inset="false" id="deviceList">
 				</div>
-				
-				<!-- Tab for the Graphs -->
-				<div data-role="nd2tab" data-tab="Graphs">
-					<h4>Graphs</h4>
-					<hr></hr>
-				</div>
-				
-				
+-->
+				<h2 class="nd2-headline">How to play</h4>
+				<hr></hr>
+				<p>With this cool gaming app you can start easily with lernen the Morse-alphabet and -numbers.</p>
+				<p>There are currently 2 different game modes, the <b>Easy Game</b> and the <b>Advanced Game</b>.</p>
+				<h6 class="">Easy Game</h6>
 			</div>
-			<a id="addListBtn" onclick="startBLEScan" href="#" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button"><i class="zmdi zmdi-bluetooth-search zmd-2x"></i></a>
-			<!-- <div data-role="footer" data-position="fixed">
+
+			<div data-role="footer" data-position="fixed" class="ui-content wow fadIn">
 				<div class="row center-xs">
-					<div class="col-xs-12">
-						<!-- <button id="addListBtn" class="ui-btn ui-btn-inline clr-btn-deep-purple waves-button waves-effect">Scan</button>
-						<a id="addListBtn" href="#" class="ui-btn ui-btn-inline clr-btn-deep-purple waves-button waves-effect waves-button waves-effect">Scan</a>
+					<div class="col-xs-6">
+						<div class="box">
+							<a href="#gameOptionPage" class="ui-btn ui-btn-raised clr-primary btnFooterMargin">Let's Go!!!</a>
+						</div>
 					</div>
 				</div>
-			</div> -->
+			</div>
+
+<!--			<a id="startScanBtn" href="#" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
+				<i class="zmdi zmdi-bluetooth-search zmd-2x"></i>
+-->			</a>
 			
 		</div>	
 		
-		<div data-role="page" id="devicePage">
-		
-		
-		
+	<!-- 
+		#################################
+			Page for the connected Device 
+			<gameOptionPage>
+		#################################
+	-->
+		<div data-role="page" id="gameOptionPage">
+
+			<div data-role="header" data-position="fixed" class="ui-content wow fadeIn">
+				<a id="backButton" class="ui-btn ui-btn-icon-left"></a>
+				<h2 id="deviceHeader">Device Name</h2>
+			</div>
+
+			<div data-role="content" class="ui-content">
+
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a href="#easyGamePage" id="easyGameBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">New easy Game</a>
+						</div>
+					</div>
+				</div>
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a href="#advancedGamePage" id="advancedGamePageBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">New advanced Game</a>
+						</div>
+					</div>
+				</div>
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a href="#" id="showMorseBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">View Morse-Table</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- onclick="disconnectBtn" -->
+			<a id="disconnectBtn" href="#startPage" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
+				<i class="zmdi zmdi-close zmd-2x"></i> End Gaming
+			</a>
+
+		</div>
+	<!-- 
+		##############################################
+		Page for an easy Game
+		select Answer from 4 given options A,B,C and D
+		<easyGamePage>
+		##############################################
+	-->
+		<div data-role="page" id="easyGamePage">
+			<div data-role="header" data-position="fixed" class="ui-content wow fadeIn">
+				<h1>Easy Game</h1>
+			</div>
+			<div data-role="content" class="ui-content">
+				
+				<!-- Show the morse-code of a symbol -->
+				<div class="symbol-pos">
+					<h2 id="easySymbol" class="nd2-display-3">#</h2>
+				</div>
+
+				<!-- Correct/Total ratio counter -->
+				<div class="symbol-pos">
+					<h6 id="easyRatio" class="nd2-title">X/X</h6>
+				</div>
+
+				<!-- Group of Buttons to choose an Option -->
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="ans0Btn" class="ui-btn ui-btn-raised waves-effect waves-button waves-effect waves-button clr-primary btnCenter">
+							#
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="ans1Btn" class="ui-btn ui-btn-raised waves-effect waves-button clr-primary btnCenter">
+							#
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="ans2Btn" class="ui-btn ui-btn-raised waves-effect waves-button clr-primary btnCenter">
+							#
+							</a>
+						</div>
+					</div>
+				</div>
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="ans3Btn" class="ui-btn ui-btn-raised waves-effect waves-button clr-primary btnCenter">
+							#
+							</a>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="endEasyBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-warning">
+								<i class="zmdi zmdi-close zmd-2x"></i> End Game
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 		
+		<!-- 
+			#################################################
+			Page for an advanced game with vibration function
+			<advancedGamePage>
+			#################################################
+		-->
+		<div data-role="page" id="advancedGamePage"> 
+			<div data-role="header">
+				<h1>Advanced Game</h1>
+			</div>
+			<div data-role="content">
+				
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="resendBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">
+							Feel Code
+							</a>
+						</div>
+					</div>
+				</div>
+
+				<!-- Correct/Total ratio counter -->
+				<div class="symbol-pos">
+					<h6 id="advancedRatio" class="nd2-title">X/X</h6>
+				</div>
+
+				<div class="row">
+					<div class="col-xs-6 col-sm-6 col-md-4"><div class="box"></div></div>
+						<div class="col-xs-6 col-sm-6 col-md-4">
+							<div class="box">
+								<label for="answerInput" class="symbol-pos">Your Answer:</label>
+								<input id="answerInput" name="answerInput" value="" type="text" data-clear-btn="true" pattern="[A-Z0-9]"/>
+							</div>
+						</div>
+					<div class="col-xs-6 col-sm-6 col-md-4"><div class="box"></div></div>
+				</div>
+				
+				<div class="row bottom-xs center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="approveBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">
+							Approve
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div data-role="footer" data-position="fixed">
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="endEasyBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-warning">
+								<i class="zmdi zmdi-close zmd-2x"></i> End Game
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		
 		<script type="text/javascript" src="cordova.js"></script>
         <!-- <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script> -->
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js" id="cordova-jquery"></script>
-        <script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
+		<script type="text/javascript" src="js/jquery.mobile-1.4.5.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="js/nativedroid2.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
-		<script type="text/javascript" src="js/waves.min.js"></script>
-		
+		<script type="text/javascript" src="vendor/waves/waves.min.js"></script>
+		<!-- <script type="text/javascript" src="js/waves.min.js"></script>-->
+		<script type="text/javascript" src="vendor/wow/wow.min.js"></script>
+
+
 		<script type="text/javascript" id="jqm-trans-disable">
 		/* For having a faster transition */
 		$(document).on("mobileinit", function() {

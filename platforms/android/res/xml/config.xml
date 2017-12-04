@@ -3,9 +3,12 @@
     <feature name="BLE">
         <param name="android-package" value="com.megster.cordova.ble.central.BLECentralPlugin" />
     </feature>
-    <name>BLE Environment</name>
+    <feature name="Vibration">
+        <param name="android-package" value="org.apache.cordova.vibration.Vibration" />
+    </feature>
+    <name>Morse Code Game</name>
     <description>
-        The app scanns for special Environment Sensor devices with BLE.
+        A new haptic game, to learn the Morse code with ease.
     </description>
     <author email="alexander.luengen@student.kit.edu" href="Luengen">
         LA

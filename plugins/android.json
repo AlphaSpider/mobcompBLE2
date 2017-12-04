@@ -9,6 +9,9 @@
     "installed_plugins": {
         "cordova-plugin-ble-central": {
             "PACKAGE_NAME": "com.luengen.alexander"
+        },
+        "cordova-plugin-vibration": {
+            "PACKAGE_NAME": "com.luengen.alexander"
         }
     },
     "dependent_plugins": {

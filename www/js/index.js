@@ -1,33 +1,33 @@
 
-/* Characteristics for the SparkFun BME 280 Sensor */
-var ENV_SERVICE	       	= "181a";
-
-var ENV_TEMP			= "2a6e";
-var ENV_HUM				= "2a6f";
-var ENV_PRESS			= "2a6d";
-
-/*  Characteristics for the MiCS-6814 Sensor */
-var GAS_SERVICE   		= "4b822f90-3941-4a4b-a3cc-b2602ffe0d00";
-
-var GAS_CO_RAW			= "4b822fa1-3941-4a4b-a3cc-b2602ffe0d00";
-var GAS_CO_CALIB		= "4b822fa2-3941-4a4b-a3cc-b2602ffe0d00";
-var GAS_NO2_RAW			= "4b822f91-3941-4a4b-a3cc-b2602ffe0d00";
-var GAS_NO2_CALIB		= "4b822f92-3941-4a4b-a3cc-b2602ffe0d00";
-var GAS_NH3_RAW			= "4b822fb1-3941-4a4b-a3cc-b2602ffe0d00";
-var GAS_NH3_CALIB		= "4b822fb2-3941-4a4b-a3cc-b2602ffe0d00";
-
-var deviceCounter 		= 0;
-var deviceNextId		= 0;
 var stateConnected		= false;
-var missingCalData		= false;
 var connectedDevice;
-var calibData 			= [];
+var deviceNextId		= 0;
 var isScanning 			= false;
+
+var timeShort			= 600;
+var timeLong			= 1500;
+var advancedCode;
+
+var numberOffset 		= 25
+var maxNumSymb			= 36
+var alpha 				= ["A", "B", "C", "D", "E", "F", "G", "H", "I",
+							"J", "K", "L", "M", "N", "O", "P", "Q", "R", 
+							"S", "T", "U", "V", "W", "X", "Y", "Z", 
+							"0","1", "2", "3", "4", "5", "6", "7", "8", "9",
+							"_"];
+var code 				= ["·-", "-···", "−·−·", "−··", "·", "··−·", "−−·", "····", "··", 
+							"·−−−", "−·−", "·−··", "−−", "−·", "−−−", "·−−·", "−−·−", "·−·",
+							"···", "−", "··−", "···−", "·−−", "−··−", "−·−−", "−−··",
+							"−−−−−", "·−−−−", "··−−−", "···−−", "····−", "·····", "−····", "−−···", "−−−··", "−−−−·",
+							"|"];
+
 
 $( document ).ready(function() {
 	console.log("ready!");
 });
-
+document.addEventListener("deviceready", function() {
+	console.log(navigator.vibrate);
+}, false);
 
 $(document).on("pageshow", function() {
 	rescaleContent();
@@ -98,6 +98,7 @@ function deviceFound(device) {
 						"<div class='row center-xs'>" +
 							"<div class='col-xs-12'>" +
 								"<button id='conBtn" + deviceNextId + "' class='ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary clr-bg-green clr-btn-accent-black'>T</button>" +
+								"<button id='checkConBtn'" + deviceNextId + "' class='ui-btn ui-btn-inline ui-btn-fab ui-btn-raised clr-primary clr-bg-green clr-btn-accent-black'>T</button>" +
 							"</div>" +
 						"</div>" +
 						"<p>" + device + "</p>"
@@ -156,92 +157,131 @@ function connectionSuccess() {
 		reverse:	true,
 		showLoadMsg:	true
 	});
-	
-	//1. start retrieving calibration data
-	
-	// read CO calibration
-	ble.read(connectedDevice.id, GAS_SERVICE, GAS_CO_CALIB, calibCOSucc, calibFail);
-	// read NO2 calibration
-	ble.read(connectedDevice.id, GAS_SERVICE, GAS_NO2_CALIB, calibNO2Succ, calibFail);
-	// read NH3 calibration
-	ble.read(connectedDevice.id, GAS_SERVICE, GAS_NH3_CALIB, calibNH3Succ, calibFail);
-		
-	//2. register for notification with Temp/Hum/Pres
-	// register for Temp
-	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_TEMP, notifyTemp, notifyFailure);
-	// register for Hum 
-	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_HUM, notifyHum, notifyFailure);
-	// register for Pres
-	ble.startNotification(connectedDevice.id, ENV_SERVICE, ENV_PRESS, notifyPres, notifyFailure);
-	
-	// register for CO
-	ble.startNotification(connectedDevice.id, GAS_SERVICE, GAS_CO_RAW, notifyCO, notifyFailure);
-	// register for NO2
-	ble.startNotification(connectedDevice.id, GAS_SERVICE, GAS_NO2_RAW, notifyNO, notifyFailure);
-	// register for NH3
-	ble.startNotification(connectedDevice.id, GAS_SERVICE, GAS_NH3_RAW, notifyNH, notifyFailure)
-/*	
-	//3. after 7s register for notification CO/NO2/NH3
-	setTimeout(function() {
-		// stop former notifications 
-		
-	}, 7000);
-*/
 }
 
 function connectionFailure(peripheral) {
 	console.log("Failed to connect: " + peripheral);
 }
 
-function calibCOSucc(buffer) {
-	calibData[0] = new Int16Array(buffer);
+$("#easyGamePage").on("pageshow", function() {
+	initEasyGame();
+	newEasyRound();
+})
+$("#advancedGamePage").on("pageshow", function() {
+	initAdvancedRound();
+	newAdvancedRound();
+});
+
+function initAdvancedRound() {
+	$("#answerInput").val('');
+	$("#advancedRatio").html("0/0");
+	advancedCode = null;
+	$("#resendBtn").click(function() {
+		console.log("Playing code: " + advancedCode);
+		if(advancedCode != null) {
+			var pattern = [];
+			for(var i = 0; i < advancedCode.length - 1; i++) {
+				// vibrate with pattern
+				switch (advancedCode[i]) {
+					case "·":
+						// short vibration
+						pattern.push(timeShort);
+						//navigator.vibrate(timeShort);
+						break;
+					case "−":
+						// long vibration
+						pattern.push(timeLong);
+						//navigator.vibrate(timeLong);
+						break;
+					default:
+						console.log("Not playable at Index " + i);
+						break;
+				}
+				pattern.push(1000);
+			}
+			console.log(pattern);
+			navigator.vibrate(pattern);
+		}
+	});
 }
 
-function calibNO2Succ(buffer) {
-	calibData[1] = new Int16Array(buffer);
+function newAdvancedRound() {
+	// 1. Select a new random morse code from 0 - (36 - 1)
+	advancedCode = code[Math.floor(Math.random() * (maxNumSymb - 1))];
+	console.log("New Code: " + advancedCode);
+	// 2. clear the input area
+	$("#answerInput").val('');
+	// 3. readd the click event for approval
+	$("#approveBtn").click(function() {
+		var answer = $("#answerInput").val();
+		var ratio = $("#advancedRatio").html().split("/");
+		var total = parseInt(ratio[1]);
+		var correct = parseInt(ratio[0]);
+		console.log("Check answer: " + answer);
+		if( answer.length == 1 && code[alpha.indexOf(answer)] == advancedCode) {
+			// a proper answer, check if is correct
+			$("#advancedRatio").html((++correct) + "/" + (++total));
+		} else {
+			// not a proper answer
+			alert("Wrong answer. Length:" + answer.length);
+			$("#advancedRatio").html((correct) + "/" + (++total));
+		}
+		$("#answerInput").val('');
+		newAdvancedRound();
+	});
 }
 
-function calibNH3Succ(buffer) {
-	calibData[2] = new Int16Array(buffer);
+// plays the current advancedCode as vibrations
+
+
+// game Logic for an easy game
+function initEasyGame() {
+	$("#easyRatio").html("0/0");
+
+	for(var i = 0; i < 4; i++) {
+		$("#ans" + i + "Btn").click(function() {
+			// check if answer is correct and update the UI
+			var ansSym = $("#" + this.id).text();
+			var questSym = $("#easySymbol").text();
+
+			// 1. get the ratio text
+			var ratio = $("#easyRatio").text().split("/");
+			var correct = parseInt(ratio[0]);
+			var total = parseInt(ratio[1]);
+
+			if(code.indexOf(questSym) == alpha.indexOf(ansSym)) {
+				// answer was correct
+				// update ratio
+				$("#easyRatio").html("" + (++correct) + "/" + (++total));
+			} else {
+				// answer was incorrect
+				// update only total
+				$("#easyRatio").html("" + correct + "/" + (++total));
+			}
+			newEasyRound();
+		});
+	}
 }
 
-function calibFail(reason) {
-	console.log(reason);
-	missingCalData = true;
-}
+function newEasyRound() {
+	
+	// 1. Pick the random symbol index between 0 - (36 - 1)
+	var symbolIndex = Math.floor(Math.random() * (maxNumSymb - 1));
+	
+	// 2. Show the new choosen Symbol 
+	$("#easySymbol").html(code[symbolIndex]);
 
-function notifyTemp(buffer) {
-	console.log("Notification Temp: " + buffer);
-	$("#value_temp").html(bytesToString(buffer));
-}
-
-function notifyHum(buffer) {
-	console.log("Notification Hum: " + buffer)
-	$("#value_hum").html(bytesToString(buffer));
-}
-
-function notifyPres(buffer) {
-	console.log("Notification Pres: " + buffer);
-	$("#value_pres").html(bytesToString(buffer));
-}
-
-function notifyCO(buffer) {
-	console.log("Notifcation CO: " + buffer);
-	$("#value_co").html(bytesToString(buffer));
-}
-
-function notifyNO(buffer) {
-	console.log("Notification NO: " + buffer);
-	$("#value_no").html(bytesToString(buffer));
-}
-
-function notifyNH(buffer) {
-	console.log("Notification NH: " + buffer);
-	$("#value_nh").html(bytesToString(buffer));
-}
-
-function notifyFailure(reason) {
-	console.log("Notification failed: " + reason);
+	// 3. Pick the random index for the correct option between 0 - 3
+	var correctIndex = Math.floor(Math.random() * 4);
+	
+	// 4. Show other symbols on the option-buttons
+	for(var i = 0; i < 4; i++) {
+		if(i == correctIndex) {
+			$("#ans" + i + "Btn").html(alpha[symbolIndex]);
+		} else {
+			$("#ans" + i + "Btn").html(alpha[Math.floor(Math.random() * (maxNumSymb - 1))]);
+		}
+	}
 }
 
 // calculate new height for the content div in index.html
@@ -253,8 +293,4 @@ function rescaleContent() {
 	var contentMargins 	= content.outerHeight() - content.height();
 	var contentHeight 	= winHeight - contentMargins;
 	content.height(contentHeight);
-}
-
-function bytesToString(buffer) {
-	return String.fromCharCode.apply(null, new Uint8Array(buffer));
 }
