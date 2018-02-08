@@ -13,15 +13,17 @@ body ,html{
 	margin:				0px;
 }
 
+#startScanBtn{
+	z-index: 1001!important;
+}
+
 .symbol-pos{
 	text-align: 	center!important;
-	margin-top:		8px!important;
-	margin-bottom:	8px!important;
 }
 
 .btnFooterMargin{
-	margin-top: 	10px!important;
-	margin-bottom: 	15px!important;
+	margin-top: 	5px!important;
+	margin-bottom: 	10px!important;
 }
 
 .btnCenter{
@@ -64,7 +66,10 @@ body ,html{
 	bottom: 	15px!important;
 	right:		15px!important;
 	text-align:	center;
+	z-index: 10!important;
 }
+
+
 
 .btn-fab{
 	background-color: var(--main-nav-color)!important;

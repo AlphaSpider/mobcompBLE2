@@ -29,6 +29,7 @@
 		#########################################
 		Start Page
 		to scann and select a close-by BLE-device
+		<startPage>
 		#########################################			
 	-->
 		<div data-role="page" id="startPage">
@@ -51,6 +52,11 @@
 				<p>With this cool gaming app you can start easily with lernen the Morse-alphabet and -numbers.</p>
 				<p>There are currently 2 different game modes, the <b>Easy Game</b> and the <b>Advanced Game</b>.</p>
 				<h6 class="">Easy Game</h6>
+				<p>Given a random morse-code, each round you have to choose the correct Character or Number representation of the code
+				, out of 4 different Options.</p>
+				<h6 class="">Advanced Game</h6>
+				<p>In each round you have  to identify a random morse-code.</p>
+				<p>When pressing the button, you can feel the vibration as often as you want.</p>
 			</div>
 
 			<div data-role="footer" data-position="fixed" class="ui-content wow fadIn">
@@ -101,17 +107,28 @@
 				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
-							<a href="#" id="showMorseBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">View Morse-Table</a>
+							<a href="#codeTablePage" id="showMorseBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">View Morse-Table</a>
 						</div>
 					</div>
 				</div>
 			</div>
 			
 			<!-- onclick="disconnectBtn" -->
-			<a id="disconnectBtn" href="#startPage" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
+<!--			<a id="disconnectBtn" href="#startPage" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
 				<i class="zmdi zmdi-close zmd-2x"></i> End Gaming
 			</a>
-
+-->
+			<div data-role="footer" data-position="fixed">
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="endOptionBtn" href="#startPage" class="ui-btn ui-btn-raised clr-warning">
+								<i class="zmdi zmdi-close zmd-2x"></i> Home
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	<!-- 
 		##############################################
@@ -198,7 +215,7 @@
 			<div data-role="header">
 				<h1>Advanced Game</h1>
 			</div>
-			<div data-role="content">
+			<div data-role="content" class="ui-content">
 				
 				<div class="row center-xs">
 					<div class="col-xs-6">
@@ -249,7 +266,34 @@
 				</div>
 			</div>
 		</div>
-
+	
+		<!--
+			#############################################
+			This Page should just show the morse-alphabet
+			with the ability to search for characters.
+			<codeTablePage>
+			#############################################
+		-->
+		<div data-role="page" id="codeTablePage">
+			<div data-role="header" data-position="fixed">
+				<h1>Morse Code Table</h1>
+			</div>
+			<div data-role="content" class="ui-content">
+				Currently under development...
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="endCodeTableBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-warning">
+								<i class="zmdi zmdi-close zmd-2x"></i> Return
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		
 		<script type="text/javascript" src="cordova.js"></script>
         <!-- <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script> -->

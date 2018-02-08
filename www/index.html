@@ -29,29 +29,35 @@
 		#########################################
 		Start Page
 		to scann and select a close-by BLE-device
+		<startPage>
 		#########################################			
 	-->
 		<div data-role="page" id="startPage">
 
 			<div data-role="header" data-position="fixed" class="ui-content wow fadeIn">
-				<h2> Morse Learner </h2>	
+				<h2> Morse Code Vibez </h2>	
 			</div>
 			
 			<div data-role="content" id="content" class="ui-content">
 				
-<!--			<h4>List of Sensor devices</h4>
+				<h4>List of Sensor devices</h4>
 				<hr></hr>
-				<p id="listPlaceholder" class="clr-grey">-- Run Scanner --</p>
+				<p id="listPlaceholder" class="clr-grey">-- Run Scan --</p>
 				
 				<div data-role="collapsible-set" data-inset="false" id="deviceList">
 				</div>
--->
-				<h2 class="nd2-headline">How to play</h4>
+
+<!--				<h2 class="nd2-headline">How to play</h4>
 				<hr></hr>
-				<p>With this cool gaming app you can start easily with lernen the Morse-alphabet and -numbers.</p>
+				<p>With this cool gaming app you can easily lernen the Morse-alphabet and -numbers.</p>
 				<p>There are currently 2 different game modes, the <b>Easy Game</b> and the <b>Advanced Game</b>.</p>
 				<h6 class="">Easy Game</h6>
-			</div>
+				<p>Given a random morse-code, each round you have to choose the correct Character or Number representation of the code
+				, out of 4 different Options.</p>
+				<h6 class="">Advanced Game</h6>
+				<p>In each round you have  to identify a random morse-code.</p>
+				<p>When pressing the button, you can feel the vibration as often as you want.</p>
+-->			</div>
 
 			<div data-role="footer" data-position="fixed" class="ui-content wow fadIn">
 				<div class="row center-xs">
@@ -63,9 +69,9 @@
 				</div>
 			</div>
 
-<!--			<a id="startScanBtn" href="#" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
+			<a id="startScanBtn" href="#" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
 				<i class="zmdi zmdi-bluetooth-search zmd-2x"></i>
--->			</a>
+			</a>
 			
 		</div>	
 		
@@ -83,35 +89,63 @@
 			</div>
 
 			<div data-role="content" class="ui-content">
-
+	
 				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
-							<a href="#easyGamePage" id="easyGameBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">New easy Game</a>
+							<p>Pick your game mode:</p>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a href="#easyGamePage" id="easyGameBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">Easy</a>
 						</div>
 					</div>
 				</div>
 				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
-							<a href="#advancedGamePage" id="advancedGamePageBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">New advanced Game</a>
+							<a href="#advancedGamePage" id="advancedGamePageBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">Advanced</a>
 						</div>
 					</div>
 				</div>
+				<hr></hr>
 				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
-							<a href="#" id="showMorseBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">View Morse-Table</a>
+							<p>Find the morse code table:</p>
+						</div>
+					</div>
+				</div>
+				
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a href="#codeTablePage" id="showMorseBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">View Code</a>
 						</div>
 					</div>
 				</div>
 			</div>
 			
 			<!-- onclick="disconnectBtn" -->
-			<a id="disconnectBtn" href="#startPage" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
+<!--			<a id="disconnectBtn" href="#startPage" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
 				<i class="zmdi zmdi-close zmd-2x"></i> End Gaming
 			</a>
-
+-->
+			<div data-role="footer" data-position="fixed">
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="endOptionBtn" href="#startPage" class="ui-btn ui-btn-raised clr-warning btnFooterMargin">
+								<i class="zmdi zmdi-close zmd-2x"></i> Home
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	<!-- 
 		##############################################
@@ -179,7 +213,7 @@
 				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
-							<a id="endEasyBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-warning">
+							<a id="endEasyBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-warning btnFooterMargin">
 								<i class="zmdi zmdi-close zmd-2x"></i> End Game
 							</a>
 						</div>
@@ -198,7 +232,7 @@
 			<div data-role="header">
 				<h1>Advanced Game</h1>
 			</div>
-			<div data-role="content">
+			<div data-role="content" class="ui-content">
 				
 				<div class="row center-xs">
 					<div class="col-xs-6">
@@ -241,7 +275,7 @@
 				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
-							<a id="endEasyBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-warning">
+							<a id="endEasyBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-warning btnFooterMargin">
 								<i class="zmdi zmdi-close zmd-2x"></i> End Game
 							</a>
 						</div>
@@ -249,7 +283,40 @@
 				</div>
 			</div>
 		</div>
-
+	
+		<!--
+			#############################################
+			This Page should just show the morse-alphabet
+			with the ability to search for characters.
+			<codeTablePage>
+			#############################################
+		-->
+		<div data-role="page" id="codeTablePage">
+			<div data-role="header" data-position="fixed">
+				<h1>Morse Code Table</h1>
+			</div>
+			<div data-role="content" class="ui-content">
+				Currently under development...
+				
+				<div id="transListView">
+					<div id="transItemTemplate">
+					</div>
+				</div>
+				
+			</div>
+			<div data-role="footer" data-position="fixed">
+				<div class="row center-xs">
+					<div class="col-xs-6">
+						<div class="box">
+							<a id="endCodeTableBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-warning btnFooterMargin">
+								<i class="zmdi zmdi-close zmd-2x"></i> Return
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
 		
 		<script type="text/javascript" src="cordova.js"></script>
         <!-- <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script> -->

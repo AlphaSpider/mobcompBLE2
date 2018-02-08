@@ -4,8 +4,9 @@ var connectedDevice;
 var deviceNextId		= 0;
 var isScanning 			= false;
 
-var timeShort			= 600;
-var timeLong			= 1500;
+var timeBreak			= 500;
+var timeShort			= 500;
+var timeLong			= 1000;
 var advancedCode;
 
 var numberOffset 		= 25
@@ -176,6 +177,7 @@ function initAdvancedRound() {
 	$("#answerInput").val('');
 	$("#advancedRatio").html("0/0");
 	advancedCode = null;
+	// Click event to vibrite the morse code
 	$("#resendBtn").click(function() {
 		console.log("Playing code: " + advancedCode);
 		if(advancedCode != null) {
@@ -197,21 +199,14 @@ function initAdvancedRound() {
 						console.log("Not playable at Index " + i);
 						break;
 				}
-				pattern.push(1000);
+				// short break between each 
+				pattern.push(timeBreak);
 			}
 			console.log(pattern);
 			navigator.vibrate(pattern);
 		}
 	});
-}
-
-function newAdvancedRound() {
-	// 1. Select a new random morse code from 0 - (36 - 1)
-	advancedCode = code[Math.floor(Math.random() * (maxNumSymb - 1))];
-	console.log("New Code: " + advancedCode);
-	// 2. clear the input area
-	$("#answerInput").val('');
-	// 3. readd the click event for approval
+		// 3. readd the click event for approval
 	$("#approveBtn").click(function() {
 		var answer = $("#answerInput").val();
 		var ratio = $("#advancedRatio").html().split("/");
@@ -229,6 +224,15 @@ function newAdvancedRound() {
 		$("#answerInput").val('');
 		newAdvancedRound();
 	});
+	
+}
+
+function newAdvancedRound() {
+	// 1. Select a new random morse code from 0 - (36 - 1)
+	advancedCode = code[Math.floor(Math.random() * (maxNumSymb - 1))];
+	console.log("New Code: " + advancedCode);
+	// 2. clear the input area
+	$("#answerInput").val('');
 }
 
 // plays the current advancedCode as vibrations

@@ -15,13 +15,11 @@ body ,html{
 
 .symbol-pos{
 	text-align: 	center!important;
-	margin-top:		8px!important;
-	margin-bottom:	8px!important;
 }
 
 .btnFooterMargin{
-	margin-top: 	10px!important;
-	margin-bottom: 	15px!important;
+	margin-top: 	5px!important;
+	margin-bottom: 	10px!important;
 }
 
 .btnCenter{
