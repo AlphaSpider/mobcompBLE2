@@ -24,8 +24,8 @@ var deviceNextId		= 0;
 var isScanning 			= false;
 
 // App options variables
-var motorForceOff		= 0xFF;
-var motorForceOn		= 0x00;
+var motorForceOff		= 0x00;
+var motorForceOn		= 0xFF;
 var signalBaseTic		= 1;
 var signalBreakTic		= 1;
 var shortLongRatio		= 0.5;
@@ -39,6 +39,7 @@ var timeBreak			= 500;
 var timeShort			= 500;
 var timeLong			= 1000;
 var advancedCode;
+var selectedCode;
 
 var numberOffset 		= 25
 var maxNumSymb			= 36
@@ -47,15 +48,16 @@ var alpha 				= ["A", "B", "C", "D", "E", "F", "G", "H", "I",
 							"S", "T", "U", "V", "W", "X", "Y", "Z", 
 							"0","1", "2", "3", "4", "5", "6", "7", "8", "9",
 							"_"];
-var code 				= ["·-", "-···", "−·−·", "−··", "·", "··−·", "−−·", "····", "··", 
+var code 				= ["·−", "−···", "−·−·", "−··", "·", "··−·", "−−·", "····", "··", 
 							"·−−−", "−·−", "·−··", "−−", "−·", "−−−", "·−−·", "−−·−", "·−·",
 							"···", "−", "··−", "···−", "·−−", "−··−", "−·−−", "−−··",
 							"−−−−−", "·−−−−", "··−−−", "···−−", "····−", "·····", "−····", "−−···", "−−−··", "−−−−·",
 							"|"];
 
-
 $( document ).ready(function() {
 	console.log("ready!");
+	$("#codeOptionPanel").panel();
+
 });
 document.addEventListener("deviceready", function() {
 	//console.log(navigator.vibrate);
@@ -74,6 +76,7 @@ $(document).on("pagecontainerbeforechange", function (e, data) {
 			case "gameOptionPage":
 				if(stateConnected) {
 					ble.disconnect(device.id, showToast("Disconnected", 2000));
+					stateConnected = false;
 				}
 				data.toPage = "#startPage";
 				break;
@@ -84,7 +87,6 @@ $(document).on("pagecontainerbeforechange", function (e, data) {
 				data.toPage = "#gameOptionPage";
 				break;
 			case "startPage":
-				//TODO: exit application
 				data.toPage = "#startPage";
 				break;
 			case "codeTablePage":
@@ -97,7 +99,7 @@ $(document).on("pagecontainerbeforechange", function (e, data) {
     }
 });
 
-$(window).on('resize orientationchange', rescaleContent());
+
 /*
 	Everything starts with this
 */
@@ -250,7 +252,6 @@ function initConnectedDevice() {
 	ble.read(connectedDevice.id, SERVICE, CHAR_MOTOR_COUNT, 
 		function(buffer) {
 			var temp = new Uint8Array(buffer);
-			console.log("[initConnectedDevice.readSuccess]: Amount of motors = " + temp[0]);
 			motorCount = temp[0];
 			// 2. prepare the buffers for the motors
 			outBufferOn = new Uint8Array(motorCount);
@@ -259,10 +260,6 @@ function initConnectedDevice() {
 				outBufferOn[i] = motorForceOn;
 				outBufferOff[i] = motorForceOff;
 			}
-			console.log("[initiConnectedDevice.readSuccess]: on/off buffers = " 
-							+ JSON.stringify(outBufferOn)
-							+ "/" 
-							+ JSON.stringify(outBufferOff));
 			// 3. set the force for each motor to show success
 			var outBuffer = new Uint8Array(motorCount);
 			for(var i = 0; i < motorCount; i++) {
@@ -315,17 +312,45 @@ $("#advancedGamePage").on("pageshow", function() {
 });
 
 $("#codeTablePage").on("pageshow", function() {
+	$("#codeListView").empty();
+	$("#vibSelBtn").off("click");
+	$("#vibSelBtn").on("click", function() {
+		// 1. get the selected item from the list
+		var temp = selectedCode.split("-");
+		var tCode = code[temp[1]];
+		// 2. vibrate the code of the item
+		vibrate(getCodeVibPattern(tCode));
+	});
+	$("#vibSelBtn").addClass("ui-disabled");
+	
 	// add all alpha-code matches to the searchable table
 	var template = "";
 	for(var i = 0; i < maxNumSymb; i++) {
 		// add index to id
-		template = "<div id='transItemTemplate" + i + "'>" +
-					alpha[i] + "    " + code[i] +
-					"</div>";
-		$("#transListView").append(template);
+		template = "<li id='listItem-"
+					+ i
+					+ "'><a href='#' " 
+					+ "class='waves-effect waves-button waves-effect waves-button'"
+					+ " id='codeItem-" 
+					+ i 
+					+ "'>"
+					+ alpha[i] + "     " + code[i]
+					+"</a></li>";
+		$("#codeListView").append(template);
 	}
+	// add onClick for the li-elements,
+	// to save the selected item
+	$("#codeListView").children("li").on("click", function() {
+		var index = $(this).index();
+		// 1. Remove all "selected" indication from the elements
+		$("#codeListView>li.item-selected").removeClass("item-selected");
+		$("#listItem-" + index).addClass("item-selected");
+		// 2. get ID of the clicked element
+		selectedCode = "codeItem-" + index;
+		$("#vibSelBtn").removeClass("ui-disabled");
+	});
 	// refresh the widget
-	//$("#transItemList").refresh();
+	$("#codeListView").listview("refresh");
 });
 
 function initAdvancedRound() {
@@ -384,12 +409,10 @@ function getCodeVibPattern(codeStr) {
 				//navigator.vibrate(timeLong);
 				break;
 			default:
-				console.log("Not playable at Index " + i);
+				console.log("[getCodeVibPattern] Not playable at Index " + i + " Content= " + codeStr[i]);
 				break;
 		}
 	}
-	// short break between each 
-	//pattern.push(timeBreak);
 	return pattern;
 }
 
@@ -520,17 +543,6 @@ function newEasyRound() {
 			$("#ans" + i + "Btn").html(alpha[Math.floor(Math.random() * (maxNumSymb - 1))]);
 		}
 	}
-}
-
-// calculate new height for the content div in index.html
-function rescaleContent() {
-	console.log("[RESCALING] rescaling now");
-	scroll(0, 0);
-	var winHeight 		= $(window).height();
-	var content 		= $("#content");
-	var contentMargins 	= content.outerHeight() - content.height();
-	var contentHeight 	= winHeight - contentMargins;
-	content.height(contentHeight);
 }
 
 function showToast(strMsg, time) {

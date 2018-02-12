@@ -13,8 +13,16 @@ body ,html{
 	margin:				0px;
 }
 
-#startScanBtn{
+#startScanBtn, #vibSelBtn{
 	z-index: 1001!important;
+}
+
+#codeOptionPanel {
+	background-color: whitesmoke;
+}
+
+.item-selected{
+	background-color: #ddd!important;
 }
 
 .symbol-pos{
