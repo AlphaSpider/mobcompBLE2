@@ -24,8 +24,8 @@ var deviceNextId		= 0;
 var isScanning 			= false;
 
 // App options variables
-var motorForceOff		= 0xFF;
-var motorForceOn		= 0x00;
+var motorForceOff		= 0x00;
+var motorForceOn		= 0xFF;
 var signalBaseTic		= 1;
 var signalBreakTic		= 1;
 var shortLongRatio		= 0.5;
@@ -72,6 +72,9 @@ $(document).on("pagecontainerbeforechange", function (e, data) {
 		
 		switch($.mobile.activePage.attr("id")) {
 			case "gameOptionPage":
+				if(stateConnected) {
+					ble.disconnect(device.id, showToast("Disconnected", 2000));
+				}
 				data.toPage = "#startPage";
 				break;
 			case "advancedGamePage":
@@ -117,10 +120,7 @@ function bleEnabled() {
 		isScanning = true;
 		
 		// show a toast informing about the scann
-		new $.nd2Toast({
-			message: "Started scanning... ",
-			ttl:	2000
-		});
+		showToast("Started scanning...", 2000);
 		
 		$("#deviceList").empty();
 		//start the scan
@@ -152,7 +152,7 @@ function failedToDiscover() {
 }
 
 function stopScan() {
-	alert('Finished Scanning');
+	showToast("Finished Scan", 2000);
 	// hide loader
 	$.mobile.loading("hide");
 	ble.stopScan;
@@ -160,7 +160,6 @@ function stopScan() {
 	if(deviceNextId == 0) {
 		// nothing was found
 		$("#listPlaceholder").html("No devices found. Try again").show();
-		
 	}
 }
 //found a Device, add it to the device list
@@ -181,7 +180,6 @@ function deviceFound(device) {
 									"</a>" +
 								"</div>" +
 							"</div>" +
-							"<p>" + device + "</p>" +
 						"</div>");
 		console.log(newEntry);
 		if(deviceNextId == 0) {
@@ -221,7 +219,7 @@ function tryConnect(device) {
 			console.log(JSON.stringify(peripheral));
 			connectionSuccess(peripheral);
 		}, 
-		connectionFailure());
+		connectionFailure);
 	} else {
 		// currently connected to a device
 		// show allert
@@ -266,7 +264,7 @@ function initConnectedDevice() {
 							+ "/" 
 							+ JSON.stringify(outBufferOff));
 			// 3. set the force for each motor to show success
-			var outBuffer = new Uint8Array[motorCount];
+			var outBuffer = new Uint8Array(motorCount);
 			for(var i = 0; i < motorCount; i++) {
 				outBuffer[i] = motorForceOff;
 			}
@@ -404,18 +402,19 @@ function vibrate(pattern) {
 	if(stateConnected) {
 		console.log("[vibrate]: Connected, vibrate on device...");
 		// 1. 	calculate a time array to fire on and off events
-		//		without the first on event
-		var time = []; 
-		var patIndex = 0;
-		for(var i = 1; i < (2 * pattern.length) - 1; i++) {
-			if(i % 2 === 0) {
-				// add time for signal
-				time[i] += pattern[i];
+		//		starting with the first OFF event
+		var etp = [];
+		for(var i = 0; i < (pattern.length * 2) - 1; i++) {
+			if(i % 2 === 1) {
+				// add break time
+				etp[i] = timeBreak;
 			} else {
-				// add time for break
-				time[i] += timeBreak;
+				// add duration time
+				etp[i] = pattern[(i / 2)];
 			}
-			time[i + 1] += time[i];
+		}		
+		for(var i = 1; i < etp.length; i++) {
+			etp[i] += etp[i - 1];
 		}
 		
 		var temp;
@@ -423,13 +422,12 @@ function vibrate(pattern) {
 		// vibrate the Gatt device for the given pattern
 		var logStr = "[vibrate]: ";
 		setMotorState("ON");
-		for(var i = 0; i < pattern.length - 1; i++) {
+		for(var i = 0; i < etp.length; i++) {
 						
 			(i % 2 === 0) ? temp = "OFF" : temp = "ON";
-			logStr += "[" + temp + "] - after " + pattern[i] + "ms| \n";
+			logStr += "[" + temp + "] - after " + etp[i] + "ms| \n";
 			// trigger new motor state for the next pattern value
-			setTimeout(setMotorState, pattern[i], temp);
-			pattern[i + 1] += pattern[i];
+			setTimeout(setMotorState, etp[i], temp);
 		}
 		console.log(logStr);
 	} else {
@@ -533,4 +531,11 @@ function rescaleContent() {
 	var contentMargins 	= content.outerHeight() - content.height();
 	var contentHeight 	= winHeight - contentMargins;
 	content.height(contentHeight);
+}
+
+function showToast(strMsg, time) {
+			new $.nd2Toast({
+			message: strMsg,
+			ttl:	time
+		});
 }
