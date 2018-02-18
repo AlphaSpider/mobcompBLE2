@@ -34,8 +34,8 @@
 	-->
 		<div data-role="page" id="startPage">
 
-			<div data-role="header" data-position="fixed" class="ui-content wow fadeIn">
-				<h2> Morse Code Vibez </h2>	
+			<div data-role="header" data-position="fixed" class="ui-header wow fadeIn" data-wow-delay="0.4s">
+				<h2 class="wow fadeIn ui-title" data-wow-delay="0.4s"> Morse Code Vibez </h2>	
 			</div>
 			
 			<div data-role="content" id="content" class="ui-content">
@@ -60,14 +60,16 @@
 -->			</div>
 
 			<div data-role="footer" data-position="fixed" class="ui-content wow fadIn">
-				<div class="row center-xs">
+				<a id="withoutDevBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-primary btnFooterMargin">Without external Device</a>
+
+				
+<!--				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
-							<a href="#gameOptionPage" class="ui-btn ui-btn-raised clr-primary btnFooterMargin">Let's Go!!!</a>
 						</div>
 					</div>
 				</div>
-			</div>
+-->			</div>
 
 			<a id="startScanBtn" href="#" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
 				<i class="zmdi zmdi-bluetooth-search zmd-2x"></i>
@@ -83,9 +85,14 @@
 	-->
 		<div data-role="page" id="gameOptionPage">
 
-			<div data-role="header" data-position="fixed" class="ui-content wow fadeIn">
-				<a id="backButton" class="ui-btn ui-btn-icon-left"></a>
+			<div data-role="header" data-position="fixed" class="ui-header wow fadeIn" data-wow-delay="0.4s">
+				<a href="#startPage" id="optBackButton" class="ui-btn ui-btn-left" data-role="button">
+					<i class="zmdi zmdi-long-arrow-left"></i>
+				</a>
 				<h2 id="deviceHeader">Device Name</h2>
+				<a href="#codeOptionPanel" id="mainGameOptBtn" class="ui-btn-right ui-btn" data-role="button">
+					<i class="zmdi zmdi-settings"></i>
+				</a>
 			</div>
 
 			<div data-role="content" class="ui-content">
@@ -135,7 +142,7 @@
 				<i class="zmdi zmdi-close zmd-2x"></i> End Gaming
 			</a>
 -->
-			<div data-role="footer" data-position="fixed">
+<!--			<div data-role="footer" data-position="fixed">
 				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
@@ -146,6 +153,7 @@
 					</div>
 				</div>
 			</div>
+-->
 		</div>
 	<!-- 
 		##############################################
@@ -155,70 +163,68 @@
 		##############################################
 	-->
 		<div data-role="page" id="easyGamePage">
-			<div data-role="header" data-position="fixed" class="ui-content wow fadeIn">
+			<div data-role="header" data-position="fixed" class="ui-header wow fadeIn" data-wow-delay="0.4s">
+				<a href="#gameOptionPage" id="easyBackButton" class="ui-btn ui-btn-left" data-role="button">
+					<i class="zmdi zmdi-long-arrow-left"></i>
+				</a>
 				<h1>Easy Game</h1>
+				<a href="#codeOptionPanel" id="easyGameOptBtn" class="ui-btn-right ui-btn" data-role="button">
+					<i class="zmdi zmdi-settings"></i>
+				</a>
 			</div>
 			<div data-role="content" class="ui-content">
 				
-				<!-- Show the morse-code of a symbol -->
-				<div class="symbol-pos">
-					<h2 id="easySymbol" class="nd2-display-3">#</h2>
-				</div>
+				<div id="responsBlock1">
+					<!-- Show the morse-code of a symbol -->
+					<div class="symbol-pos">
+						<h2 id="easySymbol" class="nd2-display-3">#</h2>
+					</div>
 
-				<!-- Correct/Total ratio counter -->
-				<div class="symbol-pos">
-					<h6 id="easyRatio" class="nd2-title">X/X</h6>
-				</div>
-
-				<!-- Group of Buttons to choose an Option -->
-				<div class="row center-xs">
-					<div class="col-xs-6">
-						<div class="box">
-							<a id="ans0Btn" class="ui-btn ui-btn-raised waves-effect waves-button waves-effect waves-button clr-primary btnCenter">
-							#
-							</a>
-						</div>
+					<!-- Correct/Total ratio counter -->
+					<div class="symbol-pos">
+						<h6 id="easyRatio" class="nd2-title">X/X</h6>
 					</div>
 				</div>
-				<div class="row center-xs">
-					<div class="col-xs-6">
-						<div class="box">
-							<a id="ans1Btn" class="ui-btn ui-btn-raised waves-effect waves-button clr-primary btnCenter">
-							#
-							</a>
+				<div id="responsBlock2">
+					<!-- Group of Buttons to choose an Option-->
+					<div class="row center-xs">
+						<div class="col-xs-6">
+							<div class="box">
+								<a id="ans0Btn" class="ui-btn ui-btn-raised waves-effect waves-button waves-effect waves-button clr-primary btnCenter">
+								#
+								</a>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row center-xs">
-					<div class="col-xs-6">
-						<div class="box">
-							<a id="ans2Btn" class="ui-btn ui-btn-raised waves-effect waves-button clr-primary btnCenter">
-							#
-							</a>
+					<div class="row center-xs">
+						<div class="col-xs-6">
+							<div class="box">
+								<a id="ans1Btn" class="ui-btn ui-btn-raised waves-effect waves-button clr-primary btnCenter">
+								#
+								</a>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row center-xs">
-					<div class="col-xs-6">
-						<div class="box">
-							<a id="ans3Btn" class="ui-btn ui-btn-raised waves-effect waves-button clr-primary btnCenter">
-							#
-							</a>
+					<div class="row center-xs">
+						<div class="col-xs-6">
+							<div class="box">
+								<a id="ans2Btn" class="ui-btn ui-btn-raised waves-effect waves-button clr-primary btnCenter">
+								#
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="row center-xs">
+						<div class="col-xs-6">
+							<div class="box">
+								<a id="ans3Btn" class="ui-btn ui-btn-raised waves-effect waves-button clr-primary btnCenter">
+								#
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
 				
-			</div>
-			<div data-role="footer" data-position="fixed">
-				<div class="row center-xs">
-					<div class="col-xs-6">
-						<div class="box">
-							<a id="endEasyBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-warning btnFooterMargin">
-								<i class="zmdi zmdi-close zmd-2x"></i> End Game
-							</a>
-						</div>
-					</div>
-				</div>
 			</div>
 		</div>
 		
@@ -229,8 +235,14 @@
 			#################################################
 		-->
 		<div data-role="page" id="advancedGamePage"> 
-			<div data-role="header">
+			<div data-role="header" data-position="fixed" class="ui-header wow fadeIn" data-wow-delay="0.4s">
+				<a href="#gameOptionPage" id="advBackButton" class="ui-btn ui-btn-left" data-role="button">
+					<i class="zmdi zmdi-long-arrow-left"></i>
+				</a>
 				<h1>Advanced Game</h1>
+				<a href="#codeOptionPanel" id="advGameOptBtn" class="ui-btn-right ui-btn" data-role="button">
+					<i class="zmdi zmdi-settings"></i>
+				</a>
 			</div>
 			<div data-role="content" class="ui-content">
 				
@@ -238,7 +250,8 @@
 					<div class="col-xs-6">
 						<div class="box">
 							<a id="resendBtn" class="ui-btn ui-btn-raised clr-primary btnCenter">
-							Feel Code
+								<i class="zmdi zmdi-vibration"></i>
+								Vibrate
 							</a>
 						</div>
 					</div>
@@ -249,15 +262,15 @@
 					<h6 id="advancedRatio" class="nd2-title">X/X</h6>
 				</div>
 
-				<div class="row">
-					<div class="col-xs-6 col-sm-6 col-md-4"><div class="box"></div></div>
-						<div class="col-xs-6 col-sm-6 col-md-4">
-							<div class="box">
-								<label for="answerInput" class="symbol-pos">Your Answer:</label>
-								<input id="answerInput" name="answerInput" value="" type="text" data-clear-btn="true" pattern="[A-Z0-9]"/>
-							</div>
+				<div class="row center-xs">					
+					<div class="col-xs-6 col-sm-6 col-md-4">
+						<div class="box">
+								<div class="custom-rect"><div class="custom-width">
+								<label for="answerInput" class="symbol-pos symbol-color">Your Answer:</label>
+								<input id="answerInput" name="answerInput" value="" type="text" data-clear-btn="true" pattern="[A-Z0-9]" class="custom-input-margin"/>	
+							</div></div>
 						</div>
-					<div class="col-xs-6 col-sm-6 col-md-4"><div class="box"></div></div>
+					</div>
 				</div>
 				
 				<div class="row bottom-xs center-xs">
@@ -271,7 +284,7 @@
 				</div>
 			</div>
 
-			<div data-role="footer" data-position="fixed">
+<!--			<div data-role="footer" data-position="fixed">
 				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
@@ -281,7 +294,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>-->
 		</div>
 	
 		<!--
@@ -293,18 +306,23 @@
 		-->
 		<div data-role="page" id="codeTablePage">
 			<div data-role="header" data-position="fixed">
+				<a href="#gameOptionPage" id="easyBackButton" class="ui-btn ui-btn-left" data-role="button">
+					<i class="zmdi zmdi-long-arrow-left"></i>
+				</a>
 				<h1>Morse Code Table</h1>
+				<a href="#codeOptionPanel" id="codeTabOptBtn" class="ui-btn-right ui-btn" data-role="button">
+					<i class="zmdi zmdi-settings"></i>
+				</a>
 			</div>
 			<div data-role="content" class="ui-content">
-				Currently under development...
 				
-				<div id="transListView">
-					<div id="transItemTemplate">
-					</div>
+				<div id="codeListFilter">
+					<ul id="codeListView" data-role="listview" data-icon="false">
+						<li data-role="list-divider">Code alphabet</li>
+					</ul>
 				</div>
-				
 			</div>
-			<div data-role="footer" data-position="fixed">
+<!--			<div data-role="footer" data-position="fixed">
 				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
@@ -315,9 +333,35 @@
 					</div>
 				</div>
 			</div>
+		-->
+			<a id="vibSelBtn" href="#" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
+				<i class="zmdi zmdi-vibration zmd-2x"></i>
+			</a>
 		</div>
 		
-		
+		<!--
+			#############################################
+			This Panel is used to give the user the 
+			ability to adjust some variables for the
+			morse-codes
+			<codeOptionPanel>
+			#############################################
+		-->
+		<div id="codeOptionPanel" data-role="panel" data-display="overlay" data-position-fixed="true" data-position="right" data-display="overlay" class="ui-panel" data-swipe-close="false">
+			<div data-role="rangeslider">
+				<label for="sliderSignal">Signal Speed (in %): <span id="slideSigValue">50</span></label>
+				<input type="range" id="sliderSignal" name="sliderSignal" value="50" min="10" max="100" data-highlight="true" step="5">
+				<label for="sliderBreak">Signal Break-time (in ms):<span id="slideBreakValue">500</span></label>
+				<input type="range" id="sliderBreak" name="sliderBreak" value="500" min="100" max="2000" data-highlight="true" step="50">
+				<label for="sliderVibration">Vibration Strength (in %):<span id="slideVibValue">100</span></label>
+				<input type="range" id="sliderVibration" name="sliderVibration" value="100" min="" max="100" data-highlight="true" step="10">
+			</div>
+			<button id="optionSubmitBtn" class="ui-btn waves-effect waves-button waves-effect waves-button">
+				<i class="zmdi zmdi-mail-send"></i>
+				submit settings
+			</button>
+		</div>
+
 		<script type="text/javascript" src="cordova.js"></script>
         <!-- <script type="text/javascript" src="js/jquery-1.11.1.min.js" id="cordova-jquery"></script> -->
 		<script type="text/javascript" src="js/jquery-1.11.3.min.js" id="cordova-jquery"></script>
@@ -325,6 +369,7 @@
 		<script type="text/javascript" src="js/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="js/nativedroid2.js"></script>
 		<script type="text/javascript" src="js/index.js"></script>
+		<script type="text/javascript" src="js/content-scale.js"></script>
 		<script type="text/javascript" src="vendor/waves/waves.min.js"></script>
 		<!-- <script type="text/javascript" src="js/waves.min.js"></script>-->
 		<script type="text/javascript" src="vendor/wow/wow.min.js"></script>

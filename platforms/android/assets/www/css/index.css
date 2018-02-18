@@ -13,11 +13,63 @@ body ,html{
 	margin:				0px;
 }
 
-#startScanBtn{
+#startScanBtn, #vibSelBtn{
 	z-index: 1001!important;
 }
 
+#codeOptionPanel {
+	background-color: whitesmoke;
+}
+
+.responsive-block {
+	display: inline-block!important;
+	width: 49%!important;
+
+}
+
+.custom-font {
+	font-size: 20px!important;
+}
+
+.custom-code-margin {
+	margin-left: 20px;
+}
+
+.custom-rect {
+	width: 300px;
+	height: 75px;
+	padding-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 6px;
+	background: #3F51B5;
+}
+
+.custom-input-margin {
+	margin: 3px!important;
+}
+
+.custom-width {
+	width: 100px;
+	margin-left: auto;
+	margin-right: auto;
+	/*background-color: #a6a6a6;*/
+}
+
+.ui-input-text::after {
+	content: none!important;
+}
+
+.item-selected {
+	background-color: #ddd!important;
+}
+
+.symbol-color {
+	color: #ffffff!important;
+}
+
 .symbol-pos{
+
 	text-align: 	center!important;
 }
 

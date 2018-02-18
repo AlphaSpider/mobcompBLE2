@@ -60,14 +60,16 @@
 -->			</div>
 
 			<div data-role="footer" data-position="fixed" class="ui-content wow fadIn">
-				<div class="row center-xs">
+				<a id="withoutDevBtn" href="#gameOptionPage" class="ui-btn ui-btn-raised clr-primary btnFooterMargin">Without external Device</a>
+
+				
+<!--				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
-							<a href="#gameOptionPage" class="ui-btn ui-btn-raised clr-primary btnFooterMargin">Let's Go!!!</a>
 						</div>
 					</div>
 				</div>
-			</div>
+-->			</div>
 
 			<a id="startScanBtn" href="#" class="ui-btn ui-btn-inline ui-btn-fab ui-btn-fab-bottom ui-btn-raised clr-primary waves-effect waves-button">
 				<i class="zmdi zmdi-bluetooth-search zmd-2x"></i>
@@ -140,7 +142,7 @@
 				<i class="zmdi zmdi-close zmd-2x"></i> End Gaming
 			</a>
 -->
-			<div data-role="footer" data-position="fixed">
+<!--			<div data-role="footer" data-position="fixed">
 				<div class="row center-xs">
 					<div class="col-xs-6">
 						<div class="box">
@@ -151,6 +153,7 @@
 					</div>
 				</div>
 			</div>
+-->
 		</div>
 	<!-- 
 		##############################################
@@ -259,17 +262,15 @@
 					<h6 id="advancedRatio" class="nd2-title">X/X</h6>
 				</div>
 
-				<div class="row">
-					<div class="col-xs-6 col-sm-6 col-md-4"><div class="box"></div></div>
-						<div class="col-xs-6 col-sm-6 col-md-4">
-							<div class="box">
-									<div class="custom-rect"><div class="custom-width">
-									<label for="answerInput" class="symbol-pos symbol-color">Your Answer:</label>
-									<input id="answerInput" name="answerInput" value="" type="text" data-clear-btn="true" pattern="[A-Z0-9]"/>	
-								</div></div>
-							</div>
+				<div class="row center-xs">					
+					<div class="col-xs-6 col-sm-6 col-md-4">
+						<div class="box">
+								<div class="custom-rect"><div class="custom-width">
+								<label for="answerInput" class="symbol-pos symbol-color">Your Answer:</label>
+								<input id="answerInput" name="answerInput" value="" type="text" data-clear-btn="true" pattern="[A-Z0-9]" class="custom-input-margin"/>	
+							</div></div>
 						</div>
-					<div class="col-xs-6 col-sm-6 col-md-4"><div class="box"></div></div>
+					</div>
 				</div>
 				
 				<div class="row bottom-xs center-xs">
@@ -353,7 +354,7 @@
 				<label for="sliderBreak">Signal Break-time (in ms):<span id="slideBreakValue">500</span></label>
 				<input type="range" id="sliderBreak" name="sliderBreak" value="500" min="100" max="2000" data-highlight="true" step="50">
 				<label for="sliderVibration">Vibration Strength (in %):<span id="slideVibValue">100</span></label>
-				<input type="range" id="sliderVibration" name="sliderVibration" value="100" min="10" max="100" data-highlight="true" step="10">
+				<input type="range" id="sliderVibration" name="sliderVibration" value="100" min="" max="100" data-highlight="true" step="10">
 			</div>
 			<button id="optionSubmitBtn" class="ui-btn waves-effect waves-button waves-effect waves-button">
 				<i class="zmdi zmdi-mail-send"></i>

@@ -70,12 +70,15 @@ $(document).on("pageshow", function() {
 $(document).on("pagecontainerbeforechange", function (e, data) {
 																		// && data.prevPage[0].id == "PageX"
     if (typeof data.toPage == "string" && data.options.direction == "back") {
-		
+		console.log("[onChangePage]: try to move to page");
 		switch($.mobile.activePage.attr("id")) {
 			case "gameOptionPage":
+				console.log("[onChangePage]: Called");
 				if(stateConnected) {
+					console.log("[onChangePage]: Disconnecting from device: " + connectedDevice.id);
 					ble.disconnect(connectedDevice.id, showToast("Disconnected", 2000));
 					stateConnected = false;
+					connectedDevice = null;
 				}
 				data.toPage = "#startPage";
 				break;
@@ -107,10 +110,12 @@ $(document).on("pagecreate", function() {
 	$("#startScanBtn").click(function() {
 		if(!isScanning) {
 			$("#listPlaceholder").hide();
+			$("#withoutDevBtn").removeClass("ui-disabled");
 			console.log("Starting BLE Scann");
 			ble.isEnabled(bleEnabled, bleDisabled);
 		}
 	});
+	$("#withoutDevBtn").addClass("ui-disabled");
 });
 
 
@@ -146,6 +151,7 @@ function bleDisabled() {
 
 function enableFail(err) {
 	alert('Cannot enable Bluetooth: ' + err);
+	$("#withoutDevBtn").removeClass("ui-disabled");
 }
 
 function failedToDiscover() {
@@ -156,11 +162,15 @@ function stopScan() {
 	showToast("Finished Scan", 2000);
 	// hide loader
 	$.mobile.loading("hide");
-	ble.stopScan;
+	ble.stopScan(
+		function() {console.log("[stopScan]: Stop successful.");},
+		function() {console.log("[stopScan]: Stop failed.");}
+	);
 	isScanning = false;
 	if(deviceNextId == 0) {
 		// nothing was found
 		$("#listPlaceholder").html("No devices found. Try again").show();
+		$("#withoutDevBtn").removeClass("ui-disabled");
 	}
 }
 //found a Device, add it to the device list
@@ -225,6 +235,13 @@ function tryConnect(device) {
 		// currently connected to a device
 		// show allert
 		alert("Currently connected to device: " + connectedDevice.name);
+		// switch to gameOptionPage
+		$.mobile.pageContainer.pagecontainer("change", "#gameOptionPage",
+			{transition: 'slide',
+			changeHash: false,
+			reverse:	true,
+			showLoadMsg:	true
+		});
 	}
 }
 
@@ -244,6 +261,7 @@ function connectionSuccess() {
 function connectionFailure(peripheral) {
 	console.log("Failed to connect: " + peripheral);
 	stateConnected = false;
+	$("#withoutDevBtn").removeClass("ui-disabled");
 }
 
 function initConnectedDevice() {
@@ -287,7 +305,7 @@ function initConnectedDevice() {
 			}
 		}, 
 		function(){
-			console.log("[initConnectedDevice.readFail]: Error while reading the amount of motors...");
+			console.log("[initConnectedDevice.readFail]: Error while reading the amount of motors. = " + motorCount);
 		});
 	// 3. read the update frequency
 	ble.read(connectedDevice.id, SERVICE, CHAR_UPDT_FREQU, 
@@ -304,23 +322,31 @@ function initConnectedDevice() {
 // Init the optionSubmitBtn
 $("#optionSubmitBtn").on("click", function() {
 	// 1. get value for long and short signal time
-	var shortPercent = $("#sliderSignal").val();
+	var shortPercent = parseInt($("#sliderSignal").val());
 	// 2. calc new values for short, long and break times
 	timeShort = Math.floor(timeBaseMax * (shortPercent / 100.0));
 	timeLong = Math.floor(timeShort / shortLongRatio); 
-	timeBreak = $("#sliderBreak").val();
+	timeBreak = parseInt($("#sliderBreak").val());
 	console.log("[optionSubmitBtn.onClick]: New timeShort = " 
 				+ timeShort 
 				+ " new timeLong = " + timeLong 
 				+ " new timeBreak = " + timeBreak);
+				
 	// 3. get value for vibration strength
-	var vibStrength = $("#sliderVibration").val();
+	var vibStrPercent = parseInt($("#sliderVibration").val());
 	// 4. adjust the motor strength settings
-	motorForceOn = Math.floor(255 * vibStrength / 100.0);
+	var minVibStr = 178;
+	var difference = 255 - minVibStr;
+	motorForceOn = minVibStr + Math.floor(difference * vibStrPercent / 100.0);
+	console.log("[optionSubmitBtn.onClick] New Motor Force: "  + motorForceOn);
+	for(var i = 0; i < outBufferOn.length; i++) {
+		outBufferOn[i] = motorForceOn;
+	}
+
 	// 5. update values in UI
 	$("#slideSigValue").html("  " + shortPercent);
 	$("#slideBreakValue").html("  " + timeBreak);
-	$("#slideVibValue").html("  " + vibStrength);
+	$("#slideVibValue").html("  " + vibStrPercent);
 	// 6. close Panel
 	$("#codeOptionPanel").panel("close");
 });

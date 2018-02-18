@@ -45,11 +45,19 @@ body ,html{
 	background: #3F51B5;
 }
 
+.custom-input-margin {
+	margin: 3px!important;
+}
+
 .custom-width {
 	width: 100px;
 	margin-left: auto;
 	margin-right: auto;
 	/*background-color: #a6a6a6;*/
+}
+
+.ui-input-text::after {
+	content: none!important;
 }
 
 .item-selected {

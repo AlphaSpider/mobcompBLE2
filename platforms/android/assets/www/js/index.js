@@ -24,21 +24,21 @@ var deviceNextId		= 0;
 var isScanning 			= false;
 
 // App options variables
-var motorForceOff		= 0x00;
-var motorForceOn		= 0xFF;
-var signalBaseTic		= 1;
-var signalBreakTic		= 1;
-var shortLongRatio		= 0.5;
+var motorForceOff		= 0//0x00;
+var motorForceOn		= 255;//0xFF;
 var motorCount			= 0;
 var updateFreq			= 0;
 var outBufferOn;
 var outBufferOff;
 
 // Game variables
+var shortLongRatio		= 0.5;
+var timeBaseMax			= 1000;
 var timeBreak			= 500;
 var timeShort			= 500;
 var timeLong			= 1000;
 var advancedCode;
+var selectedCode;
 
 var numberOffset 		= 25
 var maxNumSymb			= 36
@@ -47,15 +47,16 @@ var alpha 				= ["A", "B", "C", "D", "E", "F", "G", "H", "I",
 							"S", "T", "U", "V", "W", "X", "Y", "Z", 
 							"0","1", "2", "3", "4", "5", "6", "7", "8", "9",
 							"_"];
-var code 				= ["·-", "-···", "−·−·", "−··", "·", "··−·", "−−·", "····", "··", 
+var code 				= ["·−", "−···", "−·−·", "−··", "·", "··−·", "−−·", "····", "··", 
 							"·−−−", "−·−", "·−··", "−−", "−·", "−−−", "·−−·", "−−·−", "·−·",
 							"···", "−", "··−", "···−", "·−−", "−··−", "−·−−", "−−··",
 							"−−−−−", "·−−−−", "··−−−", "···−−", "····−", "·····", "−····", "−−···", "−−−··", "−−−−·",
 							"|"];
 
-
 $( document ).ready(function() {
 	console.log("ready!");
+	$("#codeOptionPanel").panel();
+
 });
 document.addEventListener("deviceready", function() {
 	//console.log(navigator.vibrate);
@@ -69,11 +70,15 @@ $(document).on("pageshow", function() {
 $(document).on("pagecontainerbeforechange", function (e, data) {
 																		// && data.prevPage[0].id == "PageX"
     if (typeof data.toPage == "string" && data.options.direction == "back") {
-		
+		console.log("[onChangePage]: try to move to page");
 		switch($.mobile.activePage.attr("id")) {
 			case "gameOptionPage":
+				console.log("[onChangePage]: Called");
 				if(stateConnected) {
-					ble.disconnect(device.id, showToast("Disconnected", 2000));
+					console.log("[onChangePage]: Disconnecting from device: " + connectedDevice.id);
+					ble.disconnect(connectedDevice.id, showToast("Disconnected", 2000));
+					stateConnected = false;
+					connectedDevice = null;
 				}
 				data.toPage = "#startPage";
 				break;
@@ -84,7 +89,6 @@ $(document).on("pagecontainerbeforechange", function (e, data) {
 				data.toPage = "#gameOptionPage";
 				break;
 			case "startPage":
-				//TODO: exit application
 				data.toPage = "#startPage";
 				break;
 			case "codeTablePage":
@@ -97,7 +101,7 @@ $(document).on("pagecontainerbeforechange", function (e, data) {
     }
 });
 
-$(window).on('resize orientationchange', rescaleContent());
+
 /*
 	Everything starts with this
 */
@@ -106,10 +110,12 @@ $(document).on("pagecreate", function() {
 	$("#startScanBtn").click(function() {
 		if(!isScanning) {
 			$("#listPlaceholder").hide();
+			$("#withoutDevBtn").removeClass("ui-disabled");
 			console.log("Starting BLE Scann");
 			ble.isEnabled(bleEnabled, bleDisabled);
 		}
 	});
+	$("#withoutDevBtn").addClass("ui-disabled");
 });
 
 
@@ -145,6 +151,7 @@ function bleDisabled() {
 
 function enableFail(err) {
 	alert('Cannot enable Bluetooth: ' + err);
+	$("#withoutDevBtn").removeClass("ui-disabled");
 }
 
 function failedToDiscover() {
@@ -155,11 +162,15 @@ function stopScan() {
 	showToast("Finished Scan", 2000);
 	// hide loader
 	$.mobile.loading("hide");
-	ble.stopScan;
+	ble.stopScan(
+		function() {console.log("[stopScan]: Stop successful.");},
+		function() {console.log("[stopScan]: Stop failed.");}
+	);
 	isScanning = false;
 	if(deviceNextId == 0) {
 		// nothing was found
 		$("#listPlaceholder").html("No devices found. Try again").show();
+		$("#withoutDevBtn").removeClass("ui-disabled");
 	}
 }
 //found a Device, add it to the device list
@@ -224,6 +235,13 @@ function tryConnect(device) {
 		// currently connected to a device
 		// show allert
 		alert("Currently connected to device: " + connectedDevice.name);
+		// switch to gameOptionPage
+		$.mobile.pageContainer.pagecontainer("change", "#gameOptionPage",
+			{transition: 'slide',
+			changeHash: false,
+			reverse:	true,
+			showLoadMsg:	true
+		});
 	}
 }
 
@@ -243,6 +261,7 @@ function connectionSuccess() {
 function connectionFailure(peripheral) {
 	console.log("Failed to connect: " + peripheral);
 	stateConnected = false;
+	$("#withoutDevBtn").removeClass("ui-disabled");
 }
 
 function initConnectedDevice() {
@@ -250,7 +269,6 @@ function initConnectedDevice() {
 	ble.read(connectedDevice.id, SERVICE, CHAR_MOTOR_COUNT, 
 		function(buffer) {
 			var temp = new Uint8Array(buffer);
-			console.log("[initConnectedDevice.readSuccess]: Amount of motors = " + temp[0]);
 			motorCount = temp[0];
 			// 2. prepare the buffers for the motors
 			outBufferOn = new Uint8Array(motorCount);
@@ -259,10 +277,6 @@ function initConnectedDevice() {
 				outBufferOn[i] = motorForceOn;
 				outBufferOff[i] = motorForceOff;
 			}
-			console.log("[initiConnectedDevice.readSuccess]: on/off buffers = " 
-							+ JSON.stringify(outBufferOn)
-							+ "/" 
-							+ JSON.stringify(outBufferOff));
 			// 3. set the force for each motor to show success
 			var outBuffer = new Uint8Array(motorCount);
 			for(var i = 0; i < motorCount; i++) {
@@ -291,19 +305,51 @@ function initConnectedDevice() {
 			}
 		}, 
 		function(){
-			console.log("[initConnectedDevice.readFail]: Error while reading the amount of motors...");
+			console.log("[initConnectedDevice.readFail]: Error while reading the amount of motors. = " + motorCount);
 		});
 	// 3. read the update frequency
 	ble.read(connectedDevice.id, SERVICE, CHAR_UPDT_FREQU, 
 		function(data){
 			var temp = new Uint8Array(data);
-			console.log("[initConnectedDevice.readSuccess]: Data content " + JSON.stringify(temp));
+			console.log("[initConnectedDevice.readSuccess]: Data content " + JSON.stringify(data));
 			updateFreq = temp[0];
 		}, 
 		function(){
 			console.log("[initConnectedDevice.readFail]: Error while reading the update frequency...");
 		});
 }
+
+// Init the optionSubmitBtn
+$("#optionSubmitBtn").on("click", function() {
+	// 1. get value for long and short signal time
+	var shortPercent = parseInt($("#sliderSignal").val());
+	// 2. calc new values for short, long and break times
+	timeShort = Math.floor(timeBaseMax * (shortPercent / 100.0));
+	timeLong = Math.floor(timeShort / shortLongRatio); 
+	timeBreak = parseInt($("#sliderBreak").val());
+	console.log("[optionSubmitBtn.onClick]: New timeShort = " 
+				+ timeShort 
+				+ " new timeLong = " + timeLong 
+				+ " new timeBreak = " + timeBreak);
+				
+	// 3. get value for vibration strength
+	var vibStrPercent = parseInt($("#sliderVibration").val());
+	// 4. adjust the motor strength settings
+	var minVibStr = 178;
+	var difference = 255 - minVibStr;
+	motorForceOn = minVibStr + Math.floor(difference * vibStrPercent / 100.0);
+	console.log("[optionSubmitBtn.onClick] New Motor Force: "  + motorForceOn);
+	for(var i = 0; i < outBufferOn.length; i++) {
+		outBufferOn[i] = motorForceOn;
+	}
+
+	// 5. update values in UI
+	$("#slideSigValue").html("  " + shortPercent);
+	$("#slideBreakValue").html("  " + timeBreak);
+	$("#slideVibValue").html("  " + vibStrPercent);
+	// 6. close Panel
+	$("#codeOptionPanel").panel("close");
+});
 
 $("#easyGamePage").on("pageshow", function() {
 	initEasyGame();
@@ -315,17 +361,45 @@ $("#advancedGamePage").on("pageshow", function() {
 });
 
 $("#codeTablePage").on("pageshow", function() {
+	$("#codeListView").empty();
+	$("#vibSelBtn").off("click");
+	$("#vibSelBtn").on("click", function() {
+		// 1. get the selected item from the list
+		var temp = selectedCode.split("-");
+		var tCode = code[temp[1]];
+		// 2. vibrate the code of the item
+		vibrate(getCodeVibPattern(tCode));
+	});
+	$("#vibSelBtn").addClass("ui-disabled");
+	
 	// add all alpha-code matches to the searchable table
 	var template = "";
 	for(var i = 0; i < maxNumSymb; i++) {
 		// add index to id
-		template = "<div id='transItemTemplate" + i + "'>" +
-					alpha[i] + "    " + code[i] +
-					"</div>";
-		$("#transListView").append(template);
+		template = "<li id='listItem-"
+					+ i
+					+ "'><a href='#' " 
+					+ "class='waves-effect waves-button waves-effect waves-button custom-font'"
+					+ " id='codeItem-" 
+					+ i 
+					+ "'>"
+					+ alpha[i] + " <span class='custom-code-margin'>" + code[i]
+					+"</span></a></li>";
+		$("#codeListView").append(template);
 	}
+	// add onClick for the li-elements,
+	// to save the selected item
+	$("#codeListView").children("li").on("click", function() {
+		var index = $(this).index();
+		// 1. Remove all "selected" indication from the elements
+		$("#codeListView>li.item-selected").removeClass("item-selected");
+		$("#listItem-" + index).addClass("item-selected");
+		// 2. get ID of the clicked element
+		selectedCode = "codeItem-" + index;
+		$("#vibSelBtn").removeClass("ui-disabled");
+	});
 	// refresh the widget
-	//$("#transItemList").refresh();
+	$("#codeListView").listview("refresh");
 });
 
 function initAdvancedRound() {
@@ -347,7 +421,7 @@ function initAdvancedRound() {
 			// show error for wrong input
 		}
 	});
-		// 3. re-add the click event for approval
+	// 3. re-add the click event for approval
 	$("#approveBtn").click(function() {
 		var answer = $("#answerInput").val();
 		var ratio = $("#advancedRatio").html().split("/");
@@ -356,16 +430,29 @@ function initAdvancedRound() {
 		console.log("Check answer: " + answer);
 		if( answer.length == 1 && code[alpha.indexOf(answer)] == advancedCode) {
 			// a proper answer, check if is correct
+			// animate correct answer
+			$(".ui-content").animate({
+				backgroundColor: '#33cc33' 
+			}, 200);
+			$(".ui-content").animate({
+				backgroundColor: '#ffffff' 
+			}, 250);
 			$("#advancedRatio").html((++correct) + "/" + (++total));
 		} else {
 			// not a proper answer
-			alert("Wrong answer. Correct was > " + codeToChar(advancedCode) + " <");
+			$(".ui-content").animate({
+				backgroundColor: '##ff3300' 
+			}, 200);
+			$(".ui-content").animate({
+				backgroundColor: '#ffffff' 
+			}, 250);
+			showToast("Wrong answer. Correct was > " + codeToChar(advancedCode) + " <", 1000);
 			$("#advancedRatio").html((correct) + "/" + (++total));
 		}
 		$("#answerInput").val('');
 		newAdvancedRound();
 	});
-	
+	// 4. populate the select input
 }
 
 function getCodeVibPattern(codeStr) {
@@ -384,12 +471,10 @@ function getCodeVibPattern(codeStr) {
 				//navigator.vibrate(timeLong);
 				break;
 			default:
-				console.log("Not playable at Index " + i);
+				console.log("[getCodeVibPattern] Not playable at Index " + i + " Content= " + codeStr[i]);
 				break;
 		}
 	}
-	// short break between each 
-	//pattern.push(timeBreak);
 	return pattern;
 }
 
@@ -473,26 +558,38 @@ function newAdvancedRound() {
 
 // game Logic for an easy game
 function initEasyGame() {
+
 	$("#easyRatio").html("0/0");
 
 	for(var i = 0; i < 4; i++) {
 		$("#ans" + i + "Btn").off("click");
 		$("#ans" + i + "Btn").click(function() {
 			// check if answer is correct and update the UI
-			var ansSym = $("#" + this.id).text();
-			var questSym = $("#easySymbol").text();
+			var ansSym = $("#" + this.id).text();	// alpha-num symbol
+			var questSym = $("#easySymbol").text(); // coded symbol
 
 			// 1. get the ratio text
 			var ratio = $("#easyRatio").text().split("/");
 			var correct = parseInt(ratio[0]);
 			var total = parseInt(ratio[1]);
-
 			if(code.indexOf(questSym) == alpha.indexOf(ansSym)) {
 				// answer was correct
+				$(".ui-content").animate({
+					backgroundColor: '#33cc33' 
+				}, 200);
+				$(".ui-content").animate({
+					backgroundColor: '#ffffff' 
+				}, 200);
 				// update ratio
 				$("#easyRatio").html("" + (++correct) + "/" + (++total));
 			} else {
 				// answer was incorrect
+				$(".ui-content").animate({
+					backgroundColor: '##ff3300' 
+				}, 200);
+				$(".ui-content").animate({
+					backgroundColor: '#ffffff' 
+				}, 200);
 				// update only total
 				$("#easyRatio").html("" + correct + "/" + (++total));
 			}
@@ -520,17 +617,6 @@ function newEasyRound() {
 			$("#ans" + i + "Btn").html(alpha[Math.floor(Math.random() * (maxNumSymb - 1))]);
 		}
 	}
-}
-
-// calculate new height for the content div in index.html
-function rescaleContent() {
-	console.log("[RESCALING] rescaling now");
-	scroll(0, 0);
-	var winHeight 		= $(window).height();
-	var content 		= $("#content");
-	var contentMargins 	= content.outerHeight() - content.height();
-	var contentHeight 	= winHeight - contentMargins;
-	content.height(contentHeight);
 }
 
 function showToast(strMsg, time) {
