@@ -21,11 +21,47 @@ body ,html{
 	background-color: whitesmoke;
 }
 
-.item-selected{
+.responsive-block {
+	display: inline-block!important;
+	width: 49%!important;
+
+}
+
+.custom-font {
+	font-size: 20px!important;
+}
+
+.custom-code-margin {
+	margin-left: 20px;
+}
+
+.custom-rect {
+	width: 300px;
+	height: 75px;
+	padding-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 6px;
+	background: #3F51B5;
+}
+
+.custom-width {
+	width: 100px;
+	margin-left: auto;
+	margin-right: auto;
+	/*background-color: #a6a6a6;*/
+}
+
+.item-selected {
 	background-color: #ddd!important;
 }
 
+.symbol-color {
+	color: #ffffff!important;
+}
+
 .symbol-pos{
+
 	text-align: 	center!important;
 }
 

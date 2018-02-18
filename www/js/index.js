@@ -24,17 +24,16 @@ var deviceNextId		= 0;
 var isScanning 			= false;
 
 // App options variables
-var motorForceOff		= 0x00;
-var motorForceOn		= 0xFF;
-var signalBaseTic		= 1;
-var signalBreakTic		= 1;
-var shortLongRatio		= 0.5;
+var motorForceOff		= 0//0x00;
+var motorForceOn		= 255;//0xFF;
 var motorCount			= 0;
 var updateFreq			= 0;
 var outBufferOn;
 var outBufferOff;
 
 // Game variables
+var shortLongRatio		= 0.5;
+var timeBaseMax			= 1000;
 var timeBreak			= 500;
 var timeShort			= 500;
 var timeLong			= 1000;
@@ -75,7 +74,7 @@ $(document).on("pagecontainerbeforechange", function (e, data) {
 		switch($.mobile.activePage.attr("id")) {
 			case "gameOptionPage":
 				if(stateConnected) {
-					ble.disconnect(device.id, showToast("Disconnected", 2000));
+					ble.disconnect(connectedDevice.id, showToast("Disconnected", 2000));
 					stateConnected = false;
 				}
 				data.toPage = "#startPage";
@@ -294,13 +293,37 @@ function initConnectedDevice() {
 	ble.read(connectedDevice.id, SERVICE, CHAR_UPDT_FREQU, 
 		function(data){
 			var temp = new Uint8Array(data);
-			console.log("[initConnectedDevice.readSuccess]: Data content " + JSON.stringify(temp));
+			console.log("[initConnectedDevice.readSuccess]: Data content " + JSON.stringify(data));
 			updateFreq = temp[0];
 		}, 
 		function(){
 			console.log("[initConnectedDevice.readFail]: Error while reading the update frequency...");
 		});
 }
+
+// Init the optionSubmitBtn
+$("#optionSubmitBtn").on("click", function() {
+	// 1. get value for long and short signal time
+	var shortPercent = $("#sliderSignal").val();
+	// 2. calc new values for short, long and break times
+	timeShort = Math.floor(timeBaseMax * (shortPercent / 100.0));
+	timeLong = Math.floor(timeShort / shortLongRatio); 
+	timeBreak = $("#sliderBreak").val();
+	console.log("[optionSubmitBtn.onClick]: New timeShort = " 
+				+ timeShort 
+				+ " new timeLong = " + timeLong 
+				+ " new timeBreak = " + timeBreak);
+	// 3. get value for vibration strength
+	var vibStrength = $("#sliderVibration").val();
+	// 4. adjust the motor strength settings
+	motorForceOn = Math.floor(255 * vibStrength / 100.0);
+	// 5. update values in UI
+	$("#slideSigValue").html("  " + shortPercent);
+	$("#slideBreakValue").html("  " + timeBreak);
+	$("#slideVibValue").html("  " + vibStrength);
+	// 6. close Panel
+	$("#codeOptionPanel").panel("close");
+});
 
 $("#easyGamePage").on("pageshow", function() {
 	initEasyGame();
@@ -330,12 +353,12 @@ $("#codeTablePage").on("pageshow", function() {
 		template = "<li id='listItem-"
 					+ i
 					+ "'><a href='#' " 
-					+ "class='waves-effect waves-button waves-effect waves-button'"
+					+ "class='waves-effect waves-button waves-effect waves-button custom-font'"
 					+ " id='codeItem-" 
 					+ i 
 					+ "'>"
-					+ alpha[i] + "     " + code[i]
-					+"</a></li>";
+					+ alpha[i] + " <span class='custom-code-margin'>" + code[i]
+					+"</span></a></li>";
 		$("#codeListView").append(template);
 	}
 	// add onClick for the li-elements,
@@ -372,7 +395,7 @@ function initAdvancedRound() {
 			// show error for wrong input
 		}
 	});
-		// 3. re-add the click event for approval
+	// 3. re-add the click event for approval
 	$("#approveBtn").click(function() {
 		var answer = $("#answerInput").val();
 		var ratio = $("#advancedRatio").html().split("/");
@@ -381,16 +404,29 @@ function initAdvancedRound() {
 		console.log("Check answer: " + answer);
 		if( answer.length == 1 && code[alpha.indexOf(answer)] == advancedCode) {
 			// a proper answer, check if is correct
+			// animate correct answer
+			$(".ui-content").animate({
+				backgroundColor: '#33cc33' 
+			}, 200);
+			$(".ui-content").animate({
+				backgroundColor: '#ffffff' 
+			}, 250);
 			$("#advancedRatio").html((++correct) + "/" + (++total));
 		} else {
 			// not a proper answer
-			alert("Wrong answer. Correct was > " + codeToChar(advancedCode) + " <");
+			$(".ui-content").animate({
+				backgroundColor: '##ff3300' 
+			}, 200);
+			$(".ui-content").animate({
+				backgroundColor: '#ffffff' 
+			}, 250);
+			showToast("Wrong answer. Correct was > " + codeToChar(advancedCode) + " <", 1000);
 			$("#advancedRatio").html((correct) + "/" + (++total));
 		}
 		$("#answerInput").val('');
 		newAdvancedRound();
 	});
-	
+	// 4. populate the select input
 }
 
 function getCodeVibPattern(codeStr) {
@@ -496,26 +532,38 @@ function newAdvancedRound() {
 
 // game Logic for an easy game
 function initEasyGame() {
+
 	$("#easyRatio").html("0/0");
 
 	for(var i = 0; i < 4; i++) {
 		$("#ans" + i + "Btn").off("click");
 		$("#ans" + i + "Btn").click(function() {
 			// check if answer is correct and update the UI
-			var ansSym = $("#" + this.id).text();
-			var questSym = $("#easySymbol").text();
+			var ansSym = $("#" + this.id).text();	// alpha-num symbol
+			var questSym = $("#easySymbol").text(); // coded symbol
 
 			// 1. get the ratio text
 			var ratio = $("#easyRatio").text().split("/");
 			var correct = parseInt(ratio[0]);
 			var total = parseInt(ratio[1]);
-
 			if(code.indexOf(questSym) == alpha.indexOf(ansSym)) {
 				// answer was correct
+				$(".ui-content").animate({
+					backgroundColor: '#33cc33' 
+				}, 200);
+				$(".ui-content").animate({
+					backgroundColor: '#ffffff' 
+				}, 200);
 				// update ratio
 				$("#easyRatio").html("" + (++correct) + "/" + (++total));
 			} else {
 				// answer was incorrect
+				$(".ui-content").animate({
+					backgroundColor: '##ff3300' 
+				}, 200);
+				$(".ui-content").animate({
+					backgroundColor: '#ffffff' 
+				}, 200);
 				// update only total
 				$("#easyRatio").html("" + correct + "/" + (++total));
 			}
